@@ -7,7 +7,7 @@ import ntpath
 
 
 def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
-    '''
+    """
     compares the id in the nii file's name with the id in the metadata xml's name.
     This should result in a unique match, as the xml file's ids are unique.
     It parses the corresponding xml file and returns things like RID, EXAMDATE, SCANNER MANUFACTURER and
@@ -19,7 +19,7 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
     :param ids:
     :param what:
     :return:
-    '''
+    """
     nii_image_id = nii_name.split('.')[-2].split('_')[-1]
     meta_file = adni_meta[ids == nii_image_id][0]
     xml = ET.parse(meta_file)
@@ -50,14 +50,14 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
 
 
 def get_amyloid_label(rid, examdate, berkeley_data, name='-1'):
-    '''
+    """
     Looks into the berkeley study csv file and returns the corresponding label.
     If rid+examdate yield more than one corresponding row, it returns -1, as we then cannot find the
     exact label in the table.
     :param rid:
     :param examdate:
     :return:
-    '''
+    """
     row_idx = ((berkeley_data['EXAMDATE'] == examdate) & (berkeley_data['RID'] == rid))
     if row_idx.sum() > 1:
         print('more than one result for rid & examdate combination in berkeley study data')
@@ -72,6 +72,20 @@ def get_amyloid_label(rid, examdate, berkeley_data, name='-1'):
 
 
 def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=False):
+    """
+    for a list of paths to nifti, this function extracts the unique image id and then looks up
+    rid and exam date at the xml metadata file.
+    It then looks into the berkeley av-45 study's table and tries to find the amyloid status based
+    on rid and exam date. If there is only one row with that exact rid and exam date, the label is extracted
+    and added to a dict that has the file name as key and the label as value. if there is no ore more than one
+    corresponding rows with the looked for rid and exam date in the berkeley study table, we either omit that label
+    or add -1 for not found.
+    :param nii_paths:
+    :param berkeley_data:
+    :param adni_meta:
+    :param include_notfound:
+    :return:
+    """
     ids = [f.split('.')[-2].split('_')[-1] for f in adni_meta]
     ids = np.array(ids)
     result = {}
