@@ -46,6 +46,13 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
                 if prot.attrib['term'] == 'Mfg Model':
                     res = prot.text
             result['model'] = res
+        if w == 'is_av45':
+            protocols = xml.findall('.//protocol')
+            res = '-1'
+            for prot in protocols:
+                if prot.attrib['term'] == 'Radiopharmaceutical':
+                    res = prot.text == '18F-AV45'
+            result['is_av45'] = res
     return result
 
 
@@ -91,7 +98,9 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
     result = {}
     for nii in nii_paths:
         name = ntpath.basename(nii)[:-4]
-        meta_data = get_meta_xml(nii, adni_meta=adni_meta, ids=ids, what=['rid', 'examdate'])
+        meta_data = get_meta_xml(nii, adni_meta=adni_meta, ids=ids, what=['rid', 'examdate', 'is_av45'])
+        if not meta_data['is_av45']:
+            print("this ain't the right pet modality!")
         label = get_amyloid_label(meta_data['rid'], meta_data['examdate'], berkeley_data, name=name)
         if include_notfound or label != -1:
             result[name] = label
@@ -100,12 +109,14 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
 
 
 berkeley_csv = r'C:\Users\Fabian\stanford\federated_learning_data\UCBERKELEYAV45_04_12_19.csv'
+xml_folder = r'C:\Users\Fabian\stanford\federated_learning_data\full\ADNI_meta'
+nii_folder = r'C:\Users\Fabian\stanford\federated_learning_data\ADNI'
 berkeley_data = pd.read_csv(berkeley_csv, parse_dates=['EXAMDATE'])
-adni_meta = glob(r'C:\Users\Fabian\stanford\federated_learning_data\full\ADNI_meta\*.xml')
+adni_meta = glob(xml_folder + r'\*.xml')
 ids = [f.split('.')[-2].split('_')[-1] for f in adni_meta]
 adni_meta = np.array(adni_meta)
 ids = np.array(ids)
-nii_data = glob(r'C:\Users\Fabian\stanford\federated_learning_data\ADNI\**\*.nii', recursive=True)
+nii_data = glob(nii_folder + r'\**\*.nii', recursive=True)
 test1 = get_meta_xml(nii_data[0], adni_meta=adni_meta, ids=ids)
 print(test1)
 test2 = get_meta_xml(nii_data[0], adni_meta=adni_meta, ids=ids, what=['manufacturer', 'model'])
