@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 import os
 
-label_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\labels_detailled.pickle'
+label_path = '/share/wandell/data/reith/federated_learning/labels_detailled.pickle'
 
 with open(label_path, 'rb') as f:
     labels = pickle.load(f)
@@ -21,6 +21,7 @@ fig = plt.figure()
 plt.title('scanners used in data')
 plt.hist(scanners)
 plt.savefig(os.path.join(os.path.dirname(label_path), 'scanners'))
+fig = plt.figure()
 plt.title('amyloid status in data')
 plt.hist(amyloid)
 plt.savefig(os.path.join(os.path.dirname(label_path), 'amyloid'))
