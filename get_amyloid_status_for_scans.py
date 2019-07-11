@@ -5,6 +5,7 @@ import xml.etree.cElementTree as ET
 import numpy as np
 import ntpath
 import pickle
+import re
 
 
 def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
@@ -21,7 +22,7 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
     :param what:
     :return:
     """
-    nii_image_id = nii_name.split('.')[-2].split('_')[-1]
+    nii_image_id = re.findall(r'I\d{3,20}', nii_name)[-1]
     try:
         meta_file = adni_meta[ids == nii_image_id][0]
     except:
@@ -101,7 +102,7 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
     :param include_notfound:
     :return:
     """
-    ids = [f.split('.')[-2].split('_')[-1] for f in adni_meta]
+    ids = [re.findall(r'I\d{3,20}', f)[-1] for f in adni_meta]
     ids = np.array(ids)
     result = {}
     result_detailled = {}
@@ -119,19 +120,20 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
     return result, result_detailled
 
 
-# data_folder = r'C:\Users\Fabian\stanford\federated_learning_data'
-# berkeley_csv = r'C:\Users\Fabian\stanford\federated_learning_data\UCBERKELEYAV45_04_12_19.csv'
-# xml_folder = r'C:\Users\Fabian\stanford\federated_learning_data\full\ADNI_meta'
-# nii_folder = r'C:\Users\Fabian\stanford\federated_learning_data\ADNI'
-data_folder = '/share/wandell/data/reith/federated_learning/data'
-output_folder = '/share/wandell/data/reith/federated_learning'
-nii_folder = os.path.join(data_folder, 'data_adni')
-xml_folder = os.path.join(data_folder, 'meta_data_adni')
-berkeley_csv = os.path.join(data_folder, 'UCBERKELEYAV45_04_12_19.csv')
+data_folder = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data'
+output_folder = data_folder
+berkeley_csv = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\UCBERKELEYAV45_04_12_19.csv'
+xml_folder = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\full\ADNI_meta'
+nii_folder = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\ADNI'
+# data_folder = '/share/wandell/data/reith/federated_learning/data'
+# output_folder = '/share/wandell/data/reith/federated_learning'
+# nii_folder = os.path.join(data_folder, 'data_adni')
+# xml_folder = os.path.join(data_folder, 'meta_data_adni')
+# berkeley_csv = os.path.join(data_folder, 'UCBERKELEYAV45_04_12_19.csv')
 berkeley_data = pd.read_csv(berkeley_csv, parse_dates=['EXAMDATE'])
 # adni_meta = glob(xml_folder + r'\*.xml')
 adni_meta = glob(xml_folder + r'/*.xml')
-ids = [f.split('.')[-2].split('_')[-1] for f in adni_meta]
+ids = [re.findall(r'I\d{3,20}', f)[-1] for f in adni_meta]
 adni_meta = np.array(adni_meta)
 ids = np.array(ids)
 # nii_data = glob(nii_folder + r'\**\*.nii', recursive=True)
