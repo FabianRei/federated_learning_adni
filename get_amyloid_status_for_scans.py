@@ -22,7 +22,11 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
     :return:
     """
     nii_image_id = nii_name.split('.')[-2].split('_')[-1]
-    meta_file = adni_meta[ids == nii_image_id][0]
+    try:
+        meta_file = adni_meta[ids == nii_image_id][0]
+    except:
+        print(nii_name)
+        raise Exception
     xml = ET.parse(meta_file)
     result = {}
     for w in what:
