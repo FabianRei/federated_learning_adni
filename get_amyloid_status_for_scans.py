@@ -4,6 +4,7 @@ import pandas as pd
 import xml.etree.cElementTree as ET
 import numpy as np
 import ntpath
+import pickle
 
 
 def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
@@ -53,6 +54,8 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
                 if prot.attrib['term'] == 'Radiopharmaceutical':
                     res = prot.text == '18F-AV45'
             result['is_av45'] = res
+        if w == 'img_id':
+            result['img_id'] = nii_image_id
     return result
 
 
@@ -96,21 +99,29 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
     ids = [f.split('.')[-2].split('_')[-1] for f in adni_meta]
     ids = np.array(ids)
     result = {}
+    result_detailled = {}
     for nii in nii_paths:
         name = ntpath.basename(nii)[:-4]
-        meta_data = get_meta_xml(nii, adni_meta=adni_meta, ids=ids, what=['rid', 'examdate', 'is_av45'])
+        meta_data = get_meta_xml(nii, adni_meta=adni_meta, ids=ids, what=['rid', 'examdate', 'is_av45', 'manufacturer', 'model', 'img_id'])
         if not meta_data['is_av45']:
             print("this ain't the right pet modality!")
         label = get_amyloid_label(meta_data['rid'], meta_data['examdate'], berkeley_data, name=name)
         if include_notfound or label != -1:
             result[name] = label
-    return result
+            meta_data['label'] = label
+            meta_data['examdate'] = str(meta_data['examdate']).split(' ')[0]
+            result_detailled[name] = meta_data
+    return result, result_detailled
 
 
-
+data_folder = r'C:\Users\Fabian\stanford\federated_learning_data'
 berkeley_csv = r'C:\Users\Fabian\stanford\federated_learning_data\UCBERKELEYAV45_04_12_19.csv'
 xml_folder = r'C:\Users\Fabian\stanford\federated_learning_data\full\ADNI_meta'
 nii_folder = r'C:\Users\Fabian\stanford\federated_learning_data\ADNI'
+# data_folder = '/share/wandell/data/reith/federated_learning'
+# nii_folder = os.path.join(data_folder, 'adni_data')
+# xml_folder = os.path.join(data_folder, 'meta_data_adni')
+# berkeley_csv = os.path.join(data_folder, 'UCBERKELEYAV45_04_12_19.csv')
 berkeley_data = pd.read_csv(berkeley_csv, parse_dates=['EXAMDATE'])
 adni_meta = glob(xml_folder + r'\*.xml')
 ids = [f.split('.')[-2].split('_')[-1] for f in adni_meta]
@@ -123,5 +134,9 @@ test2 = get_meta_xml(nii_data[0], adni_meta=adni_meta, ids=ids, what=['manufactu
 print(test2)
 label = get_amyloid_label(rid=test1['rid'], examdate=test1['examdate'], berkeley_data=berkeley_data)
 print('nice')
-labels = get_labels_from_nifti(nii_data, berkeley_data, adni_meta)
+labels, labels_detailled = get_labels_from_nifti(nii_data, berkeley_data, adni_meta)
+with open(os.path.join(data_folder, 'labels_plain.pickle'), 'wb') as f:
+    pickle.dump(labels, f)
+with open(os.path.join(data_folder, 'labels_detailled.pickle'), 'wb') as f:
+    pickle.dump(labels_detailled, f)
 print('done')
