@@ -26,6 +26,7 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
         meta_file = adni_meta[ids == nii_image_id][0]
     except:
         print(nii_name)
+        print(nii_image_id)
         raise Exception
     xml = ET.parse(meta_file)
     result = {}
