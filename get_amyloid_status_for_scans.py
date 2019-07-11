@@ -114,14 +114,15 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
     return result, result_detailled
 
 
-data_folder = r'C:\Users\Fabian\stanford\federated_learning_data'
-berkeley_csv = r'C:\Users\Fabian\stanford\federated_learning_data\UCBERKELEYAV45_04_12_19.csv'
-xml_folder = r'C:\Users\Fabian\stanford\federated_learning_data\full\ADNI_meta'
-nii_folder = r'C:\Users\Fabian\stanford\federated_learning_data\ADNI'
-# data_folder = '/share/wandell/data/reith/federated_learning'
-# nii_folder = os.path.join(data_folder, 'adni_data')
-# xml_folder = os.path.join(data_folder, 'meta_data_adni')
-# berkeley_csv = os.path.join(data_folder, 'UCBERKELEYAV45_04_12_19.csv')
+# data_folder = r'C:\Users\Fabian\stanford\federated_learning_data'
+# berkeley_csv = r'C:\Users\Fabian\stanford\federated_learning_data\UCBERKELEYAV45_04_12_19.csv'
+# xml_folder = r'C:\Users\Fabian\stanford\federated_learning_data\full\ADNI_meta'
+# nii_folder = r'C:\Users\Fabian\stanford\federated_learning_data\ADNI'
+data_folder = '/share/wandell/data/reith/federated_learning/data'
+output_folder = '/share/wandell/data/reith/federated_learning'
+nii_folder = os.path.join(data_folder, 'data_adni')
+xml_folder = os.path.join(data_folder, 'meta_data_adni')
+berkeley_csv = os.path.join(data_folder, 'UCBERKELEYAV45_04_12_19.csv')
 berkeley_data = pd.read_csv(berkeley_csv, parse_dates=['EXAMDATE'])
 adni_meta = glob(xml_folder + r'\*.xml')
 ids = [f.split('.')[-2].split('_')[-1] for f in adni_meta]
@@ -135,8 +136,8 @@ print(test2)
 label = get_amyloid_label(rid=test1['rid'], examdate=test1['examdate'], berkeley_data=berkeley_data)
 print('nice')
 labels, labels_detailled = get_labels_from_nifti(nii_data, berkeley_data, adni_meta)
-with open(os.path.join(data_folder, 'labels_plain.pickle'), 'wb') as f:
+with open(os.path.join(output_folder, 'labels_plain.pickle'), 'wb') as f:
     pickle.dump(labels, f)
-with open(os.path.join(data_folder, 'labels_detailled.pickle'), 'wb') as f:
+with open(os.path.join(output_folder, 'labels_detailled.pickle'), 'wb') as f:
     pickle.dump(labels_detailled, f)
 print('done')
