@@ -62,6 +62,34 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
             result['is_av45'] = res
         if w == 'img_id':
             result['img_id'] = nii_image_id
+        if w == 'rows':
+            protocols = xml.findall('.//protocol')
+            res = '-1'
+            for prot in protocols:
+                if prot.attrib['term'] == 'Number of Rows':
+                    res = float(prot.text)
+            result['rows'] = res
+        if w == 'columns':
+            protocols = xml.findall('.//protocol')
+            res = '-1'
+            for prot in protocols:
+                if prot.attrib['term'] == 'Number of Columns':
+                    res = float(prot.text)
+            result['slices'] = res
+        if w == 'columns':
+            protocols = xml.findall('.//protocol')
+            res = '-1'
+            for prot in protocols:
+                if prot.attrib['term'] == 'Number of Slices':
+                    res = float(prot.text)
+            result['slices'] = res
+        if w == 'frames':
+            protocols = xml.findall('.//protocol')
+            res = '-1'
+            for prot in protocols:
+                if prot.attrib['term'] == 'Frames':
+                    res = float(prot.text)
+            result['frames'] = res
     return result
 
 
@@ -108,7 +136,9 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
     result_detailled = {}
     for nii in nii_paths:
         name = ntpath.basename(nii)[:-4]
-        meta_data = get_meta_xml(nii, adni_meta=adni_meta, ids=ids, what=['rid', 'examdate', 'is_av45', 'manufacturer', 'model', 'img_id'])
+        meta_data = get_meta_xml(nii, adni_meta=adni_meta, ids=ids, what=['rid', 'examdate', 'is_av45', 'manufacturer',
+                                                                          'model', 'img_id', 'rows', 'columns', 'slices',
+                                                                          'frames'])
         if not meta_data['is_av45']:
             print("this ain't the right pet modality!")
         label = get_amyloid_label(meta_data['rid'], meta_data['examdate'], berkeley_data, name=name)
@@ -131,7 +161,7 @@ nii_folder = os.path.join(data_folder, 'data_adni')
 xml_folder = os.path.join(data_folder, 'meta_data_adni')
 berkeley_csv = os.path.join(data_folder, 'UCBERKELEYAV45_04_12_19.csv')
 berkeley_data = pd.read_csv(berkeley_csv, parse_dates=['EXAMDATE'])
-# adni_meta = glob(xml_folder + r'\*.xml')
+adni_meta = glob(xml_folder + r'\*.xml')
 adni_meta = glob(xml_folder + r'/*.xml')
 ids = [re.findall(r'I\d{3,20}', f)[-1] for f in adni_meta]
 adni_meta = np.array(adni_meta)
