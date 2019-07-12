@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 label_path = '/share/wandell/data/reith/federated_learning/labels_detailled.pickle'
-
+label_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\labels_detailled.pickle'
 with open(label_path, 'rb') as f:
     labels = pickle.load(f)
 
