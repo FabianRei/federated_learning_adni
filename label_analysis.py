@@ -3,19 +3,22 @@ from matplotlib import pyplot as plt
 import numpy as np
 import os
 
-label_path = '/share/wandell/data/reith/federated_learning/labels_detailled.pickle'
-label_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\labels_detailled.pickle'
+label_path = '/share/wandell/data/reith/federated_learning/labels_detailled2.pickle'
+label_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\labels_detailled2.pickle'
 with open(label_path, 'rb') as f:
     labels = pickle.load(f)
 
 scanners = []
 amyloid = []
+rcf = []
 for k, v in labels.items():
     scanners.append(f"{v['manufacturer']}, {v['model']}")
     amyloid.append(v['label'])
+    rcf.append([v['rows'], v['columns'], v['frames']])
 
 scanners = np.array(scanners)
 amyloid = np.array(amyloid)
+rcf = np.array(rcf)
 
 fig = plt.figure()
 plt.title('scanners used in data')
