@@ -11,11 +11,20 @@ with open(label_path, 'rb') as f:
 scanners = []
 amyloid = []
 rcf = []
+img_ids = []
+names = []
+slices = []
 for k, v in labels.items():
     scanners.append(f"{v['manufacturer']}, {v['model']}")
     amyloid.append(v['label'])
     rcf.append([v['rows'], v['columns'], v['frames']])
+    img_ids.append(v['img_id'])
+    names.append(k)
+    slices.append(v['slices'])
 
+names = np.array(names)
+slices = np.array(slices)
+img_ids = np.array(img_ids)
 scanners = np.array(scanners)
 amyloid = np.array(amyloid)
 rcf = np.array(rcf)
