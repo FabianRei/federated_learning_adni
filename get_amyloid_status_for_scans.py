@@ -75,7 +75,7 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
             for prot in protocols:
                 if prot.attrib['term'] == 'Number of Columns':
                     res = float(prot.text)
-            result['slices'] = res
+            result['columns'] = res
         if w == 'columns':
             protocols = xml.findall('.//protocol')
             res = '-1'
