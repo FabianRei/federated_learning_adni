@@ -32,6 +32,9 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
     xml = ET.parse(meta_file)
     result = {}
     for w in what:
+        if w == 'site':
+            res = xml.find('.//siteKey').text
+            result['site'] = res
         if w == 'rid':
             res = int(xml.find('.//subjectIdentifier').text.split('_')[-1])
             result['rid'] = res
@@ -138,7 +141,7 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
         name = ntpath.basename(nii)[:-4]
         meta_data = get_meta_xml(nii, adni_meta=adni_meta, ids=ids, what=['rid', 'examdate', 'is_av45', 'manufacturer',
                                                                           'model', 'img_id', 'rows', 'columns', 'slices',
-                                                                          'frames'])
+                                                                          'frames', 'site'])
         if not meta_data['is_av45']:
             print("this ain't the right pet modality!")
         label = get_amyloid_label(meta_data['rid'], meta_data['examdate'], berkeley_data, name=name)
@@ -157,11 +160,11 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
 # nii_folder = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\ADNI'
 data_folder = '/share/wandell/data/reith/federated_learning/data'
 output_folder = '/share/wandell/data/reith/federated_learning'
-nii_folder = os.path.join(data_folder, 'data_adni')
-xml_folder = os.path.join(data_folder, 'meta_data_adni')
+nii_folder = os.path.join(data_folder, 'nifti')
+xml_folder = os.path.join(data_folder, 'xml')
 berkeley_csv = os.path.join(data_folder, 'UCBERKELEYAV45_04_12_19.csv')
 berkeley_data = pd.read_csv(berkeley_csv, parse_dates=['EXAMDATE'])
-adni_meta = glob(xml_folder + r'\*.xml')
+# adni_meta = glob(xml_folder + r'\*.xml')
 adni_meta = glob(xml_folder + r'/*.xml')
 ids = [re.findall(r'I\d{3,20}', f)[-1] for f in adni_meta]
 adni_meta = np.array(adni_meta)
@@ -176,8 +179,8 @@ print(test2)
 label = get_amyloid_label(rid=test1['rid'], examdate=test1['examdate'], berkeley_data=berkeley_data)
 print('nice')
 labels, labels_detailled = get_labels_from_nifti(nii_data, berkeley_data, adni_meta)
-with open(os.path.join(output_folder, 'labels_plain2.pickle'), 'wb') as f:
+with open(os.path.join(output_folder, 'labels_plain.pickle'), 'wb') as f:
     pickle.dump(labels, f)
-with open(os.path.join(output_folder, 'labels_detailled2.pickle'), 'wb') as f:
+with open(os.path.join(output_folder, 'labels_detailled.pickle'), 'wb') as f:
     pickle.dump(labels_detailled, f)
 print('done')
