@@ -188,8 +188,8 @@ print(test2)
 label = get_amyloid_label(rid=test1['rid'], examdate=test1['examdate'], berkeley_data=berkeley_data)
 print('nice')
 labels, labels_detailled = get_labels_from_nifti(nii_data, berkeley_data, adni_meta)
-with open(os.path.join(output_folder, 'labels_plain.pickle'), 'wb') as f:
+with open(os.path.join(output_folder, 'labels_plain_suvr.pickle'), 'wb') as f:
     pickle.dump(labels, f)
-with open(os.path.join(output_folder, 'labels_detailled.pickle'), 'wb') as f:
+with open(os.path.join(output_folder, 'labels_detailled_suvr.pickle'), 'wb') as f:
     pickle.dump(labels_detailled, f)
 print('done')
