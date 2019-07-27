@@ -96,7 +96,7 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
     return result
 
 
-def get_amyloid_label(rid, examdate, berkeley_data, name='-1'):
+def get_amyloid_label(rid, examdate, berkeley_data, name='-1', label_name='SUMMARYSUVR_WHOLECEREBNORM_1.11CUTOFF'):
     """
     Looks into the berkeley study csv file and returns the corresponding label.
     If rid+examdate yield more than one corresponding row, it returns -1, as we then cannot find the
@@ -114,8 +114,13 @@ def get_amyloid_label(rid, examdate, berkeley_data, name='-1'):
         print('no result found for rid & examdate combination in berkeley study data')
         print(f'file name is {name}, rid is {rid}, exam date is {examdate}')
         return -1
-    label = berkeley_data['SUMMARYSUVR_WHOLECEREBNORM_1.11CUTOFF'][row_idx]
-    return int(label)
+    label = berkeley_data[label_name][row_idx]
+    if label_name == 'SUMMARYSUVR_WHOLECEREBNORM_1.11CUTOFF':
+        return int(label)
+    elif label_name == 'SUMMARYSUVR_WHOLECEREBNORM':
+        return float(label)
+    else:
+        return label
 
 
 def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=False):
@@ -145,9 +150,13 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
         if not meta_data['is_av45']:
             print("this ain't the right pet modality!")
         label = get_amyloid_label(meta_data['rid'], meta_data['examdate'], berkeley_data, name=name)
+        label2 = get_amyloid_label(meta_data['rid'], meta_data['examdate'], berkeley_data, name=name,
+                                   label_name='SUMMARYSUVR_WHOLECEREBNORM')
+
         if include_notfound or label != -1:
             result[name] = label
             meta_data['label'] = label
+            meta_data['label_suvr'] = label2
             meta_data['examdate'] = str(meta_data['examdate']).split(' ')[0]
             result_detailled[name] = meta_data
     return result, result_detailled
