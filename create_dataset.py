@@ -9,7 +9,7 @@ def get_fname(path_name):
     return os.path.splitext(os.path.basename(path_name))[0]
 
 
-windows_db = False
+windows_db = True
 
 if windows_db:
     fpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\trial_sample'
@@ -33,9 +33,9 @@ pickle_fnames = list(pdata.keys())
 nifti_files = glob(f'{nifti_path}/**/*.nii', recursive=True)
 
 sizes = []
-h5_file = h5py.File(os.path.join(outpath, 'slice_data.h5'))
-labels_amyloid = {}
-labels_suvr = {}
+h5_file = h5py.File(os.path.join(outpath, 'slice_data.h5'), 'w')
+# labels_amyloid = {}
+# labels_suvr = {}
 write_file = open(os.path.join(outpath, 'faulty_nii_files.txt'), 'w')
 for i, f in enumerate(nifti_files):
     basename = get_fname(f)
@@ -46,21 +46,23 @@ for i, f in enumerate(nifti_files):
             arr = img.get_fdata()
             arr = arr[:, :, 50, 0]
             h5_file.create_dataset(basename, data=arr)
+            h5_file[basename].attrs['label_amyloid'] = pdata[basename]['label']
+            h5_file[basename].attrs['label_suvr'] = pdata[basename]['label_suvr']
         except Exception as e:
             print(f'{basename} sucks, error is: {e}')
             write_file.write(f'{basename}, {e} \n')
             continue
-        labels_amyloid[basename] = pdata[basename]['label']
-        labels_suvr[basename] = pdata[basename]['label_suvr']
+        # labels_amyloid[basename] = pdata[basename]['label']
+        # labels_suvr[basename] = pdata[basename]['label_suvr']
         print(f"{i*100/len(nifti_files):.2f}%. I did {basename}")
 
 
 write_file.close()
-with open(os.path.join(outpath, 'labels_amyloid.pickle'), 'wb') as f:
-    pickle.dump(labels_amyloid, f)
-
-with open(os.path.join(outpath, 'labels_suvr.pickle'), 'wb') as f:
-    pickle.dump(labels_suvr, f)
+# with open(os.path.join(outpath, 'labels_amyloid.pickle'), 'wb') as f:
+#     pickle.dump(labels_amyloid, f)
+#
+# with open(os.path.join(outpath, 'labels_suvr.pickle'), 'wb') as f:
+#     pickle.dump(labels_suvr, f)
 h5_file.close()
 print('done!')
 
