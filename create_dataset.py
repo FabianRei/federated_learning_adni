@@ -52,6 +52,7 @@ for f in nifti_files:
             continue
         labels_amyloid[basename] = pdata[basename]['label']
         labels_suvr[basename] = pdata[basename]['label_suvr']
+        print(f"I did {basename}")
 
 
 write_file.close()
