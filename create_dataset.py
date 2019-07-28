@@ -39,13 +39,18 @@ labels_suvr = {}
 for f in nifti_files:
     basename = get_fname(f)
     if basename in pickle_fnames:
-        img = nib.load(prefix + f)
-        sizes.append(img.shape)
-        arr = img.get_fdata()
-        arr = arr[:, :, 50, 0]
-        h5_file.create_dataset(basename, data=arr)
+        try:
+            img = nib.load(prefix + f)
+            sizes.append(img.shape)
+            arr = img.get_fdata()
+            arr = arr[:, :, 50, 0]
+            h5_file.create_dataset(basename, data=arr)
+        except Exception as e:
+            print(f'{basename} sucks, error is: {e}')
+            continue
         labels_amyloid[basename] = pdata[basename]['label']
         labels_suvr[basename] = pdata[basename]['label_suvr']
+
 
 with open(os.path.join(outpath, 'labels_amyloid.pickle'), 'rb') as f:
     pickle.dump(labels_amyloid, f)
