@@ -37,7 +37,7 @@ h5_file = h5py.File(os.path.join(outpath, 'slice_data.h5'))
 labels_amyloid = {}
 labels_suvr = {}
 write_file = open(os.path.join(outpath, 'faulty_nii_files.txt'), 'w')
-for f in nifti_files:
+for i, f in enumerate(nifti_files):
     basename = get_fname(f)
     if basename in pickle_fnames:
         try:
@@ -52,7 +52,7 @@ for f in nifti_files:
             continue
         labels_amyloid[basename] = pdata[basename]['label']
         labels_suvr[basename] = pdata[basename]['label_suvr']
-        print(f"I did {basename}")
+        print(f"{i*100/len(nifti_files):.2f}%. I did {basename}")
 
 
 write_file.close()
