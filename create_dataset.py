@@ -40,16 +40,16 @@ write_file = open(os.path.join(outpath, 'faulty_nii_files.txt'), 'w')
 for i, f in enumerate(nifti_files):
     basename = get_fname(f)
     if basename in pickle_fnames:
-        # try:
-        #     img = nib.load(prefix + f)
-        #     sizes.append(img.shape)
-        #     arr = img.get_fdata()
-        #     arr = arr[:, :, 50, 0]
-        #     h5_file.create_dataset(basename, data=arr)
-        # except Exception as e:
-        #     print(f'{basename} sucks, error is: {e}')
-        #     write_file.write(f'{basename}, {e} \n')
-        #     continue
+        try:
+            img = nib.load(prefix + f)
+            sizes.append(img.shape)
+            arr = img.get_fdata()
+            arr = arr[:, :, 50, 0]
+            h5_file.create_dataset(basename, data=arr)
+        except Exception as e:
+            print(f'{basename} sucks, error is: {e}')
+            write_file.write(f'{basename}, {e} \n')
+            continue
         labels_amyloid[basename] = pdata[basename]['label']
         labels_suvr[basename] = pdata[basename]['label_suvr']
         print(f"{i*100/len(nifti_files):.2f}%. I did {basename}")
