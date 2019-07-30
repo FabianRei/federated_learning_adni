@@ -50,7 +50,7 @@ train_data = torch.from_numpy(train_data).type(torch.float32)
 train_labels = torch.from_numpy(train_labels).type(torch.long)
 num_classes = len(torch.unique(train_labels))
 
-Net = ResNet50(pretrained=True, num_classes=num_classes)
+Net = ResNet50(pretrained=False, num_classes=num_classes)
 Net.cuda()
 criterion = nn.NLLLoss()
 out_path = os.path.dirname(h5_path)
