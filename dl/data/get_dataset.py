@@ -13,7 +13,8 @@ def get_dataset(h5_path, label_names=['label_amyloid'], limit=-1):
         for i, l in enumerate(label_names):
             labels[i].append(data[k].attrs[l])
     labels = [np.array(l) for l in labels]
-    return (data, *labels)
+    arrs = np.array(arrs)
+    return (arrs, *labels)
 
 
 if __name__ == '__main__':

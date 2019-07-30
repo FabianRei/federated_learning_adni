@@ -3,8 +3,8 @@ import numpy as np
 
 
 def batch_gen(data, labels, batchSize, shuffle=True):
-    epochData = data.clone()
-    epochLabels = labels.clone()
+    epochData = data  # .clone()
+    epochLabels = labels  # .clone()
     if shuffle:
         selector = np.random.permutation(len(epochData))
         epochData = epochData[selector]
@@ -19,7 +19,7 @@ def batch_gen(data, labels, batchSize, shuffle=True):
         j += batchSize
 
 
-def test(batchSize, testData, testLabels, Net, dimIn, includePredictionLabels=False, test_eval=False):
+def test(batchSize, testData, testLabels, Net, dimIn, includePredictionLabels=False, test_eval=True):
     allAccuracy =[]
     allWrongs = []
     predictions = []
@@ -57,20 +57,23 @@ def test(batchSize, testData, testLabels, Net, dimIn, includePredictionLabels=Fa
         return np.mean(allAccuracy)
 
 
-def train(epochs, batchSize, trainData, trainLabels, testData, testLabels, Net, test_interval, optimizer, criterion, dimIn):
-    bestTestAcc = 0
-    testAcc = 0
+def train(batch_size, train_data, train_labels, test_data, test_labels, Net, optimizer, criterion, test_interval=1, epochs=1, dim_in='default'):
+    test_acc = 0
     Net.train()
+    if dim_in == 'default':
+        dim_in = train_data.shape[-1]
     for epoch in range(epochs):
-        epochAcc = []
-        lossArr = []
+        epoch_acc = []
+        loss_arr = []
         logCount = 0
-        testAcc = 0
-        for batch_idx, (data, target) in enumerate(batch_gen(trainData, trainLabels, batchSize, shuffle=True)):
+        test_acc = -1
+        train_predictions = []
+        train_target = []
+        for batch_idx, (data, target) in enumerate(batch_gen(train_data, train_labels, batch_size, shuffle=True)):
             data, target = Variable(data), Variable(target)
             data, target = data.cuda(), target.cuda()
             # data = data.view(-1, dimIn)
-            data = data.view(-1, 1, dimIn, dimIn)
+            data = data.view(-1, 1, dim_in, dim_in)
             optimizer.zero_grad()
             # Net.train()
             net_out = Net(data)
@@ -78,15 +81,17 @@ def train(epochs, batchSize, trainData, trainLabels, testData, testLabels, Net, 
             loss = criterion(net_out, target)
             loss.backward()
             optimizer.step()
-            currAcc = (prediction == target).cpu().numpy()
-            epochAcc.extend(list(currAcc))
-            lossArr.append(loss.data.item())
+            batch_acc = (prediction == target).cpu().numpy()
+            train_predictions.extend(prediction)
+            train_target.extend(target)
+            epoch_acc.extend(list(batch_acc))
+            loss_arr.append(loss.data.item())
+
             if logCount % 10 == 0:
-                print(f"Train epoch: {epoch} and batch number {logCount}, loss is {np.mean(lossArr)}, accuracy is {np.mean(epochAcc)}")
+                print(f"Train epoch: {epoch} and batch number {logCount}, loss is {np.mean(loss_arr)}, accuracy is {np.mean(epoch_acc)}")
             logCount += 1
-        print(f"Train epoch: {epoch}, loss is {np.mean(lossArr)}, accuracy is {np.mean(epochAcc)}")
-        if epoch % test_interval == 0:
-            testAcc = test(batchSize, testData, testLabels, Net, dimIn)
-            if testAcc > bestTestAcc:
-                bestTestAcc = testAcc
-    return Net, testAcc
+        print(f"Train epoch: {epoch}, loss is {np.mean(loss_arr)}, accuracy is {np.mean(epoch_acc)}")
+        if epoch % test_interval == 0 and test_interval > 0:
+            optimizer.zero_grad()
+            test_acc, test_pred_label = test(batch_size, test_data, test_labels, Net, dim_in, includePredictionLabels=True)
+    return Net, test_acc, test_pred_label, np.mean(epoch_acc), np.mean(loss_arr), np.stack(train_target, train_predictions).T
