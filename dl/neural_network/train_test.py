@@ -19,14 +19,14 @@ def batch_gen(data, labels, batchSize, shuffle=True):
         j += batchSize
 
 
-def test(batchSize, testData, testLabels, Net, dimIn, includePredictionLabels=False, test_eval=True):
+def test(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=False, test_eval=True):
     allAccuracy =[]
     allWrongs = []
     predictions = []
     labels = []
     if test_eval:
         Net.eval()
-    for batch_idx, (data, target) in enumerate(batch_gen(testData, testLabels, batchSize, shuffle=False)):
+    for batch_idx, (data, target) in enumerate(batch_gen(testData, test_labels, batchSize, shuffle=False)):
         data_temp = np.copy(data)
         data, target = Variable(data), Variable(target)
         data, target = data.cuda(), target.cuda()
@@ -52,7 +52,9 @@ def test(batchSize, testData, testLabels, Net, dimIn, includePredictionLabels=Fa
         Net.train()
     print(f"Test accuracy is {np.mean(allAccuracy)}")
     if includePredictionLabels:
-        return np.mean(allAccuracy), np.stack((predictions, testLabels)).T
+        predictions = [int(p) for p in predictions]
+        test_labels = [int(l) for l in test_labels]
+        return np.mean(allAccuracy), np.stack((predictions, test_labels)).T
     else:
         return np.mean(allAccuracy)
 
@@ -94,4 +96,6 @@ def train(batch_size, train_data, train_labels, test_data, test_labels, Net, opt
         if epoch % test_interval == 0 and test_interval > 0:
             optimizer.zero_grad()
             test_acc, test_pred_label = test(batch_size, test_data, test_labels, Net, dim_in, includePredictionLabels=True)
-    return Net, test_acc, test_pred_label, np.mean(epoch_acc), np.mean(loss_arr), np.stack(train_target, train_predictions).T
+        train_target = [int(t) for t in train_target]
+        train_predictions = [int(p) for p in train_predictions]
+    return Net, test_acc, test_pred_label, np.mean(epoch_acc), np.mean(loss_arr), np.stack((train_target, train_predictions)).T

@@ -13,7 +13,7 @@ import GPUtil
 import pickle
 
 
-windows_db = False
+windows_db = True
 test_split = 0.2
 if windows_db:
     h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data.h5'
@@ -35,6 +35,9 @@ np.random.seed(42)
 shuff_idxs = np.random.permutation(len(data))
 data = data[shuff_idxs]
 labels = labels[shuff_idxs]
+if windows_db:
+    data = data[:100]
+    labels = labels[:100]
 cutoff = int(len(data)*0.2)
 test_data = data[:cutoff]
 test_labels = labels[:cutoff]
