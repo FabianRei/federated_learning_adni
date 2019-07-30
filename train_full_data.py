@@ -19,11 +19,11 @@ if windows_db:
     h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data.h5'
 else:
     h5_path = '/scratch/reith/fl/experiments/one_slice_dataset/slice_data.h5'
-extra_info = '_noPretrain_normalizeData'
+extra_info = '_pretrain_normalizeData'
 num_epochs = 30
 lr = 0.01
-decrease_after = 10
-rate_of_decrease = 0.1
+decrease_after = 3
+rate_of_decrease = 0.33
 gpu_device = 0
 save_pred_labels = True
 label_names = ['label_amyloid']
@@ -55,7 +55,7 @@ train_data = torch.from_numpy(train_data).type(torch.float32)
 train_labels = torch.from_numpy(train_labels).type(torch.long)
 num_classes = len(torch.unique(train_labels))
 
-Net = ResNet50(pretrained=False, num_classes=num_classes)
+Net = ResNet50(pretrained=True, num_classes=num_classes)
 Net.cuda()
 criterion = nn.NLLLoss()
 out_path = os.path.dirname(h5_path)
@@ -66,7 +66,7 @@ csv_path = os.path.join(out_path, f"train_test_accuracy_{time_stamp}{extra_info}
 csv_writer = CsvWriter(csv_path, header=['test_acc', 'train_acc', 'train_loss', 'epoch'])
 
 for i in range(num_epochs):
-    if i % decrease_after:
+    if i % decrease_after == 0:
         if i > 0:
             lr = lr*rate_of_decrease
         print(f"Trainig for {decrease_after} epochs with a learning rate of {lr}..")
@@ -77,7 +77,7 @@ for i in range(num_epochs):
     Net, test_acc, test_pred_label, train_acc, train_loss, train_pred_label = train_result
     csv_writer.write_row(test_acc=test_acc, train_acc=train_acc, train_loss=train_loss, epoch=i)
     if save_pred_labels:
-        pickle_fn = os.path.join(out_path, f"epoch_{i}_pred_labels_train_test_epoch_{time_stamp}{extra_info}")
+        pickle_fn = os.path.join(out_path, f"epoch_{i}_pred_labels_train_test_epoch_{time_stamp}{extra_info}.p")
         pickle_object = {'train': train_pred_label, 'test': test_pred_label}
         with open(pickle_fn, 'wb') as f:
             pickle.dump(pickle_object, f)
