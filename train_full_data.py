@@ -13,12 +13,12 @@ import GPUtil
 import pickle
 
 
-windows_db = True
+windows_db = False
 test_split = 0.2
 if windows_db:
     h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data.h5'
 else:
-    h5_path = ''
+    h5_path = '/scratch/reith/fl/experiments/one_slice_dataset/slice_data.h5'
 num_epochs = 30
 lr = 0.01
 decrease_after = 10
