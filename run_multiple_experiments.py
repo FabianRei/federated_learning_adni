@@ -51,8 +51,8 @@ if __name__ == '__main__':
     h5_file = '/scratch/reith/fl/experiments/one_slice_dataset/slice_data.h5'
     jobs = [{'extra_info': 'pretrained', 'pretrained': True},
             {'extra_info': 'non_pretrained', 'pretrained': False},
-            {'extra_info': 'pretrained_50epochs', 'pretrained': True, 'epochs': 50},
-            {'extra_info': 'non_pretrained_50epochs', 'pretrained': False, 'epochs': 50},
+            {'extra_info': 'pretrained_50epochs', 'pretrained': True, 'num_epochs': 50},
+            {'extra_info': 'non_pretrained_50epochs', 'pretrained': False, 'num_epochs': 50},
             {'extra_info': 'pretrained_0_33_decrease', 'pretrained': True, 'decrease_after': 3, 'rate_of_decrease': 0.33},
             {'extra_info': 'non_pretrained_0_33_decrease', 'pretrained': False, 'decrease_after': 3, 'rate_of_decrease': 0.33}]
 
