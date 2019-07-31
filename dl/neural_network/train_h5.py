@@ -36,6 +36,8 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
     else:
         data, labels = get_dataset(h5_path, label_names=label_names)
         # create dummy labels2. not perfect, I guess, but good enough :)
+        # turns out that I actually don't need the amyloid status label, as the suvr value is obviously sufficient to
+        # infer amyloid status. Still keeping it. Why, you ask? Because I can.
         labels2 = np.ones(len(labels))
     np.random.seed(42)
     shuff_idxs = np.random.permutation(len(data))
@@ -92,10 +94,10 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
         Net, test_acc, test_pred_label, train_acc, train_loss, train_pred_label = train_result
         if len(label_names) > 1:
             test_label_acc_test = np.mean((test_pred_label[:, 0] >= num_classes/2) == test_labels2)
-            test_label_acc_train = np.mean((train_pred_label[:, 0] >= num_classes / 2) == train_labels2)
+            test_label_acc_train = np.mean((train_pred_label[:, 0] >= num_classes / 2) == (train_pred_label[:, 1] >= num_classes / 2))
             csv_writer.write_row(test_acc=test_acc, train_acc=train_acc, train_loss=train_loss, epoch=i,
                                  test_label_acc_train=test_label_acc_train, test_label_acc_test=test_label_acc_test)
-            print(f"Amyloid status accuracy is {test_label_acc_test * 100:.2f} percent for train and {test_label_acc_train * 100:.2f} percent for train")
+            print(f"Amyloid status accuracy is {test_label_acc_test * 100:.2f} percent for test and {test_label_acc_train * 100:.2f} percent for train")
         else:
             csv_writer.write_row(test_acc=test_acc, train_acc=train_acc, train_loss=train_loss, epoch=i)
         if save_pred_labels:
