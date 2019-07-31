@@ -13,7 +13,7 @@ import GPUtil
 import pickle
 
 
-def train_h5(h5_path, num_epochs=30, label_names=('label_amyloid'), extra_info='', lr=0.01, decrease_after=10,
+def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='', lr=0.01, decrease_after=10,
              rate_of_decrease=0.1, gpu_device=-1, save_pred_labels=True, test_split=0.2, pretrained=True,
              batch_size=32):
     windows_db = False
