@@ -48,7 +48,7 @@ def run_jobs(jobs):
 
 if __name__ == '__main__':
     full_start = time.time()
-    h5_file = '/share/wandell/data/reith/federated_learning/data/one_slice_dataset/slice_data.h5'
+    h5_file = '/scratch/reith/fl/experiments/one_slice_dataset/slice_data.h5'
     jobs = [{'extra_info': 'pretrained', 'pretrained': True},
             {'extra_info': 'non_pretrained', 'pretrained': False},
             {'extra_info': 'pretrained_50epochs', 'pretrained': True, 'epochs': 50},
