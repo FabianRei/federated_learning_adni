@@ -17,9 +17,9 @@ if windows_db:
     outpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\one_slice_dataset'
     os.makedirs(outpath, exist_ok=True)
 else:
-    fpath = '/share/wandell/data/reith/federated_learning/data'
+    fpath = '/scratch/reith/fl/data'
     prefix = ''
-    outpath = '/share/wandell/data/reith/federated_learning/data/one_slice_dataset'
+    outpath = '/scratch/reith/fl/experiments /one_slice_dataset_full'
     os.makedirs(outpath, exist_ok=True)
 
 xml_path = os.path.join(fpath, 'xml')
