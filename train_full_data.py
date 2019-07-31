@@ -1,6 +1,6 @@
 from dl.data.get_dataset import get_dataset
 from dl.neural_network.resnet import ResNet50
-from dl.neural_network.train_test import train, test
+from dl.neural_network.train_test import train
 from datetime import datetime
 from dl.data.logging import Logger, CsvWriter
 import numpy as np
