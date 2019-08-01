@@ -19,7 +19,7 @@ def batch_gen(data, labels, batchSize, shuffle=True):
         j += batchSize
 
 
-def test(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=False, test_eval=True):
+def test_reg(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=False, test_eval=True):
     allAccuracy =[]
     allWrongs = []
     predictions = []
@@ -37,8 +37,8 @@ def test(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=F
             data = data.view(-1, 1, dimIn, dimIn)
         # Net.eval()
         net_out = Net(data)
-        prediction = net_out.max(1)[1]
-        testAcc = list((prediction == target).cpu().numpy())
+        prediction = net_out[:, 0]
+        testAcc = list(((prediction.detach()-target)**2).cpu().numpy())
         if not sum(testAcc) == len(target) and False:
             print(prediction.cpu().numpy()[testAcc == 0])
             print(target.cpu().numpy()[testAcc==0])
@@ -49,14 +49,14 @@ def test(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=F
         Net.train()
     print(f"Test accuracy is {np.mean(allAccuracy)}")
     if includePredictionLabels:
-        predictions = [int(p) for p in predictions]
-        test_labels = [int(l) for l in test_labels]
+        predictions = [float(p) for p in predictions]
+        test_labels = [float(l) for l in test_labels]
         return np.mean(allAccuracy), np.stack((predictions, test_labels)).T
     else:
         return np.mean(allAccuracy)
 
 
-def train(batch_size, train_data, train_labels, test_data, test_labels, Net, optimizer, criterion, test_interval=1,
+def train_reg(batch_size, train_data, train_labels, test_data, test_labels, Net, optimizer, criterion, test_interval=1,
           epochs=1, dim_in='default'):
     test_acc = 0
     Net.train()
@@ -77,23 +77,22 @@ def train(batch_size, train_data, train_labels, test_data, test_labels, Net, opt
             optimizer.zero_grad()
             # Net.train()
             net_out = Net(data)
-            prediction = net_out.max(1)[1]
+            prediction = net_out[:, 0]
             loss = criterion(net_out, target)
             loss.backward()
             optimizer.step()
-            batch_acc = (prediction == target).cpu().numpy()
+            batch_acc = ((prediction.detach()-target)**2).cpu().numpy()
             train_predictions.extend(prediction)
             train_target.extend(target)
             epoch_acc.extend(list(batch_acc))
             loss_arr.append(loss.data.item())
-
             if logCount % 10 == 0:
                 print(f"Train epoch: {epoch} and batch number {logCount}, loss is {np.mean(loss_arr)}, accuracy is {np.mean(epoch_acc)}")
             logCount += 1
         print(f"Train epoch: {epoch}, loss is {np.mean(loss_arr)}, accuracy is {np.mean(epoch_acc)}")
         if epoch % test_interval == 0 and test_interval > 0:
             optimizer.zero_grad()
-            test_acc, test_pred_label = test(batch_size, test_data, test_labels, Net, dim_in, includePredictionLabels=True)
-        train_target = [int(t) for t in train_target]
-        train_predictions = [int(p) for p in train_predictions]
+            test_acc, test_pred_label = test_reg(batch_size, test_data, test_labels, Net, dim_in, includePredictionLabels=True)
+        train_target = [float(t) for t in train_target]
+        train_predictions = [float(p) for p in train_predictions]
     return Net, test_acc, test_pred_label, np.mean(epoch_acc), np.mean(loss_arr), np.stack((train_target, train_predictions)).T
