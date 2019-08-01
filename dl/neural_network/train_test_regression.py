@@ -37,8 +37,8 @@ def test_reg(batchSize, testData, test_labels, Net, dimIn, includePredictionLabe
             data = data.view(-1, 1, dimIn, dimIn)
         # Net.eval()
         net_out = Net(data)
-        prediction = net_out[:, 0]
-        testAcc = list(((prediction.detach()-target)**2).cpu().numpy())
+        prediction = net_out[:, 0].detach().cpu().numpy()
+        testAcc = list(((prediction-target.cpu().numpy())**2))
         if not sum(testAcc) == len(target) and False:
             print(prediction.cpu().numpy()[testAcc == 0])
             print(target.cpu().numpy()[testAcc==0])
