@@ -78,6 +78,7 @@ def train_reg(batch_size, train_data, train_labels, test_data, test_labels, Net,
             # Net.train()
             net_out = Net(data)
             prediction = net_out[:, 0]
+            net_out = net_out[:, 0]
             loss = criterion(net_out, target)
             loss.backward()
             optimizer.step()

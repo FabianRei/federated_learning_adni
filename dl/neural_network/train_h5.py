@@ -18,7 +18,7 @@ import pickle
 def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='', lr=0.01, decrease_after=10,
              rate_of_decrease=0.1, gpu_device=-1, save_pred_labels=True, test_split=0.2, pretrained=True,
              batch_size=32, binning=-1, regression=False):
-    windows_db = False
+    windows_db = True
     if windows_db:
         h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data.h5'
 
@@ -55,9 +55,9 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
     data /= data.std()
 
     if windows_db:
-        data = data[:1000]
-        labels = labels[:1000]
-        labels2 = labels2[:1000]
+        data = data[:100]
+        labels = labels[:100]
+        labels2 = labels2[:100]
     cutoff = int(len(data)*test_split)
     test_data = data[:cutoff]
     test_labels = labels[:cutoff]
