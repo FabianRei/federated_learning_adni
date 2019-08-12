@@ -41,7 +41,8 @@ nifti_out = os.path.join(outpath, 'nifti')
 os.makedirs(xml_out, exist_ok=True)
 os.makedirs(nifti_out, exist_ok=True)
 shutil.copy(pickle_path, outpath)
-
+ids = np.array(ids)
+xml_files = np.array(xml_files)
 sizes = []
 h5_file = h5py.File(os.path.join(outpath, 'slice_data.h5'), 'w')
 # labels_amyloid = {}
@@ -52,8 +53,10 @@ for i, f in enumerate(nifti_files):
     if basename in pickle_fnames:
         try:
             nii_image_id = re.findall(r'I\d{3,20}', basename)[-1]
-            xml_file = xml_files[ids == nii_image_id]
-            shutil.copy2(f, nifti_out+'/', )
+            xml_file = xml_files[ids == nii_image_id][0]
+            if windows_db:
+                continue
+            shutil.copy2(f, nifti_out+'/')
             shutil.copy2(xml_file, xml_out+'/')
         except Exception as e:
             print(f'{basename} sucks, error is: {e}')
