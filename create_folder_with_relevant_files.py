@@ -51,8 +51,8 @@ for i, f in enumerate(nifti_files):
         try:
             nii_image_id = re.findall(r'I\d{3,20}', basename)[-1]
             xml_file = xml_files[ids == nii_image_id]
-            shutil.copy(f, nifti_out)
-            shutil.copy(xml_file, xml_out)
+            shutil.copy(f, nifti_out+'/')
+            shutil.copy(xml_file, xml_out+'/')
         except Exception as e:
             print(f'{basename} sucks, error is: {e}')
             write_file.write(f'{basename}, {e} \n')
