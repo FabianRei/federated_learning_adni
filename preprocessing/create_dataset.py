@@ -9,7 +9,7 @@ def get_fname(path_name):
     return os.path.splitext(os.path.basename(path_name))[0]
 
 
-windows_db = False
+windows_db = True
 
 if windows_db:
     fpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\trial_sample'
@@ -19,7 +19,7 @@ if windows_db:
 else:
     fpath = '/scratch/reith/fl/data'
     prefix = ''
-    outpath = '/scratch/reith/fl/experiments /one_slice_dataset_full'
+    outpath = '/scratch/reith/fl/experiments /three_10distance_slices_dataset_full'
     os.makedirs(outpath, exist_ok=True)
 
 xml_path = os.path.join(fpath, 'xml')
@@ -44,7 +44,8 @@ for i, f in enumerate(nifti_files):
             img = nib.load(prefix + f)
             sizes.append(img.shape)
             arr = img.get_fdata()
-            arr = arr[:, :, 50, 0]
+            # arr = arr[:, :, 50, 0]
+            arr = arr[:, :, [49, 50, 51], 0]
             h5_file.create_dataset(basename, data=arr)
             h5_file[basename].attrs['label_amyloid'] = pdata[basename]['label']
             h5_file[basename].attrs['label_suvr'] = pdata[basename]['label_suvr']
