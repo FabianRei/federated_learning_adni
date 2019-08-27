@@ -17,7 +17,7 @@ import pickle
 
 def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='', lr=0.01, decrease_after=10,
              rate_of_decrease=0.1, gpu_device=-1, save_pred_labels=True, test_split=0.2, pretrained=True,
-             batch_size=32, binning=-1, regression=False):
+             batch_size=32, binning=-1, regression=False, include_subject_ids=True):
     windows_db = False
     if windows_db:
         h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data.h5'
@@ -33,10 +33,15 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
     # if there are two labels to be fetched, we assume that the first one is trained on and the second one is for
     # testing
     if len(label_names) > 1:
-        data, labels, labels2 = get_dataset(h5_path, label_names=label_names)
+        if include_subject_ids:
+            data, labels, labels2, s_ids = get_dataset(h5_path, label_names=label_names, include_subjects=True)
+        else:
+            data, labels, labels2 = get_dataset(h5_path, label_names=label_names)
     else:
-        data, labels = get_dataset(h5_path, label_names=label_names)
-        # create dummy labels2. not perfect, I guess, but good enough :)
+        if include_subject_ids:
+            data, labels, s_ids = get_dataset(h5_path, label_names=label_names, include_subjects=True)
+        else:
+            data, labels = get_dataset(h5_path, label_names=label_names)        # create dummy labels2. not perfect, I guess, but good enough :)
         # turns out that I actually don't need the amyloid status label, as the suvr value is obviously sufficient to
         # infer amyloid status. Still keeping it. Why, you ask? Because I can.
         labels2 = np.ones(len(labels))
@@ -58,13 +63,56 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
         data = data[:100]
         labels = labels[:100]
         labels2 = labels2[:100]
-    cutoff = int(len(data)*test_split)
-    test_data = data[:cutoff]
-    test_labels = labels[:cutoff]
-    test_labels2 = labels2[:cutoff]
-    train_data = data[cutoff:]
-    train_labels = labels[cutoff:]
-    train_labels2 = labels2[cutoff:]
+    # We try to not have the same subject in train and test set. To do so, we iteratively assign from subjects with a
+    # high number of scans (max is 5) to subjects with a low number of scans (1) to train and test set. If the
+    # train-test split is 4 to 1, we assign 4 subjects to train and one to test in each iteration etc. etc.
+    if include_subject_ids:
+        ratio = int(np.round((1-test_split)/test_split))
+        n, c = np.unique(s_ids, return_counts=True)
+        sort_unique = np.argsort(n)[::-1]
+        n = list(n[sort_unique])
+        c = list(c[sort_unique])
+        test_size = int(len(data) * test_split)
+        train_size = len(data)-test_size
+        test_idxs = np.zeros(len(data)).astype(np.int)
+        train_idxs = np.zeros(len(data)).astype(np.int)
+        while True:
+            try:
+                for _ in range(int(np.floor(ratio/2))):
+                    if c[0]+np.sum(train_idxs) <= train_size:
+                        cc = c.pop(0)
+                        nn = n.pop(0)
+                        train_idxs[s_ids == nn] = 1
+                if c[0] + np.sum(test_idxs) <= test_size:
+                    cc = c.pop(0)
+                    nn = n.pop(0)
+                    test_idxs[s_ids == nn] = 1
+                for _ in range(int(np.ceil(ratio/2))):
+                    if c[0]+np.sum(train_idxs) <= train_size:
+                        cc = c.pop(0)
+                        nn = n.pop(0)
+                        train_idxs[s_ids == nn] = 1
+                if np.sum(test_idxs) == test_size and np.sum(train_idxs) == train_size:
+                    break
+            except:
+                break
+        print('data split!')
+        print(f"Test set, goal of {test_size}, got {np.sum(test_idxs)}")
+        print(f"Trai set, goal of {train_size}, got {np.sum(train_idxs)}")
+        test_data = data[test_idxs]
+        test_labels = labels[test_idxs]
+        test_labels2 = labels2[test_idxs]
+        train_data = data[train_idxs]
+        train_labels = labels[train_idxs]
+        train_labels2 = labels2[train_idxs]
+    else:
+        cutoff = int(len(data) * test_split)
+        test_data = data[:cutoff]
+        test_labels = labels[:cutoff]
+        test_labels2 = labels2[:cutoff]
+        train_data = data[cutoff:]
+        train_labels = labels[cutoff:]
+        train_labels2 = labels2[cutoff:]
 
     train_data = torch.from_numpy(train_data).type(torch.float32)
     test_data = torch.from_numpy(test_data).type(torch.float32)
@@ -130,7 +178,7 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
 
 
 if __name__ == '__main__':
-    train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data3.h5', label_names=['label_suvr', 'label_amyloid'], binning=-1,
+    train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_subj.h5', label_names=['label_suvr', 'label_amyloid'], binning=-1,
              num_epochs=10, regression=False, lr=0.0001)
 
 

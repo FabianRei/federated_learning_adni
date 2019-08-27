@@ -21,6 +21,7 @@ names = []
 slices = []
 site = []
 suvr = []
+subject_ids = []
 scan_keys = np.array(scan_sheet['Scanner'])
 scanner_keys = np.array([','.join(f.split(',')[:-1]) for f in scan_keys])
 scan_numbers = np.array(scan_sheet['Type'])
@@ -33,6 +34,7 @@ for k, v in labels.items():
     slices.append(v['slices'])
     site.append(v['site'])
     suvr.append(v['label_suvr'])
+    subject_ids.append(v['rid'])
 
 site = np.array(site)
 names = np.array(names)
@@ -41,8 +43,10 @@ img_ids = np.array(img_ids)
 scanners = np.array(scanners)
 amyloid = np.array(amyloid)
 rcf = np.array(rcf)
+subject_ids = np.array(subject_ids)
 suvr = np.array(suvr)
 types = []
+
 for s in scanners:
     t = scan_numbers[scanner_keys == s]
     types.append(int(t))

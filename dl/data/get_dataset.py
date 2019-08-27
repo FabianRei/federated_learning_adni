@@ -2,10 +2,12 @@ import h5py
 import numpy as np
 
 
-def get_dataset(h5_path, label_names=['label_amyloid'], limit=-1):
+def get_dataset(h5_path, label_names=['label_amyloid'], limit=-1, include_subjects=False):
     data = h5py.File(h5_path, 'r')
     arrs = []
     labels = []
+    if include_subjects:
+        label_names.append('rid')
     for i in range(len(label_names)):
         labels.append([])
     for k in data.keys():
