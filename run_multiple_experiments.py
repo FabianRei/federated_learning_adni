@@ -48,7 +48,7 @@ def run_jobs(jobs):
 
 if __name__ == '__main__':
     full_start = time.time()
-    h5_file = '/scratch/reith/fl/experiments/one_slice_dataset/slice_data.h5'
+    h5_file = '/scratch/reith/fl/experiments/more_one_slice_dataset/slice_data.h5'
     jobs = [{'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
             {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
             {'extra_info': '', 'pretrained': True, 'num_epochs': 50, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
