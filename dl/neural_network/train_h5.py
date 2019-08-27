@@ -81,17 +81,17 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
                 for _ in range(int(np.floor(ratio/2))):
                     if c[0]+np.sum(train_idxs) <= train_size:
                         cc = c.pop(0)
-                        nn = n.pop(0)
-                        train_idxs[s_ids == nn] = 1
+                        nnn = n.pop(0)
+                        train_idxs[s_ids == nnn] = 1
                 if c[0] + np.sum(test_idxs) <= test_size:
                     cc = c.pop(0)
-                    nn = n.pop(0)
-                    test_idxs[s_ids == nn] = 1
+                    nnn = n.pop(0)
+                    test_idxs[s_ids == nnn] = 1
                 for _ in range(int(np.ceil(ratio/2))):
                     if c[0]+np.sum(train_idxs) <= train_size:
                         cc = c.pop(0)
-                        nn = n.pop(0)
-                        train_idxs[s_ids == nn] = 1
+                        nnn = n.pop(0)
+                        train_idxs[s_ids == nnn] = 1
                 if np.sum(test_idxs) == test_size and np.sum(train_idxs) == train_size:
                     break
             except:
