@@ -162,16 +162,16 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
     return result, result_detailled
 
 
-# data_folder = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data'
-# output_folder = data_folder
-# berkeley_csv = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\UCBERKELEYAV45_04_12_19.csv'
-# xml_folder = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\full\ADNI_meta'
-# nii_folder = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\ADNI'
-data_folder = '/share/wandell/data/reith/federated_learning/data'
-output_folder = '/share/wandell/data/reith/federated_learning'
-nii_folder = os.path.join(data_folder, 'nifti')
-xml_folder = os.path.join(data_folder, 'xml')
-berkeley_csv = os.path.join(data_folder, 'UCBERKELEYAV45_04_12_19.csv')
+data_folder = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data'
+output_folder = data_folder
+berkeley_csv = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\UCBERKELEYAV45_04_12_19.csv'
+xml_folder = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\full\ADNI_meta'
+nii_folder = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\ADNI'
+# data_folder = '/share/wandell/data/reith/federated_learning/data'
+# output_folder = '/share/wandell/data/reith/federated_learning'
+# nii_folder = os.path.join(data_folder, 'nifti')
+# xml_folder = os.path.join(data_folder, 'xml')
+# berkeley_csv = os.path.join(data_folder, 'UCBERKELEYAV45_04_12_19.csv')
 berkeley_data = pd.read_csv(berkeley_csv, parse_dates=['EXAMDATE'])
 # adni_meta = glob(xml_folder + r'\*.xml')
 adni_meta = glob(xml_folder + r'/*.xml')

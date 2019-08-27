@@ -19,7 +19,7 @@ if windows_db:
 else:
     fpath = '/scratch/reith/fl/data'
     prefix = ''
-    outpath = '/scratch/reith/fl/experiments /three_dist40_slices_dataset_full'
+    outpath = '/scratch/reith/fl/experiments/three_dist40_slices_dataset_full'
     os.makedirs(outpath, exist_ok=True)
 
 xml_path = os.path.join(fpath, 'xml')
