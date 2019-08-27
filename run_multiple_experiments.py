@@ -49,12 +49,12 @@ def run_jobs(jobs):
 if __name__ == '__main__':
     full_start = time.time()
     h5_file = '/scratch/reith/fl/experiments/one_slice_dataset/slice_data.h5'
-    jobs = [{'extra_info': 'pretrained_reg', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
-            {'extra_info': 'non_pretrained_reg', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
-            {'extra_info': 'pretrained_50epochs_reg', 'pretrained': True, 'num_epochs': 50, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
-            {'extra_info': 'non_pretrained_50epochs_reg', 'pretrained': False, 'num_epochs': 50, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
-            {'extra_info': 'pretrained_0_33_decrease_reg', 'pretrained': True, 'decrease_after': 3, 'rate_of_decrease': 0.33, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
-            {'extra_info': 'non_pretrained_0_33_decrease_reg', 'pretrained': False, 'decrease_after': 3, 'rate_of_decrease': 0.33, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001}]
+    jobs = [{'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
+            {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
+            {'extra_info': '', 'pretrained': True, 'num_epochs': 50, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
+            {'extra_info': '', 'pretrained': False, 'num_epochs': 50, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
+            {'extra_info': '', 'pretrained': True, 'decrease_after': 3, 'rate_of_decrease': 0.33, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001},
+            {'extra_info': '', 'pretrained': False, 'decrease_after': 3, 'rate_of_decrease': 0.33, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001}]
 
     jobs = [(h5_file, job) for job in jobs]
     run_jobs(jobs)
