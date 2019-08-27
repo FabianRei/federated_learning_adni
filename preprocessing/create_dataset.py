@@ -19,7 +19,7 @@ if windows_db:
 else:
     fpath = '/scratch/reith/fl/data'
     prefix = ''
-    outpath = '/scratch/reith/fl/experiments /three_dist10_slices_dataset_full'
+    outpath = '/scratch/reith/fl/experiments /three_dist20_slices_dataset_full'
     os.makedirs(outpath, exist_ok=True)
 
 xml_path = os.path.join(fpath, 'xml')
@@ -45,7 +45,7 @@ for i, f in enumerate(nifti_files):
             sizes.append(img.shape)
             arr = img.get_fdata()
             # arr = arr[:, :, 50, 0]
-            arr = arr[:, :, [40, 50, 60], 0]
+            arr = arr[:, :, [30, 50, 70], 0]
             h5_file.create_dataset(basename, data=arr)
             h5_file[basename].attrs['label_amyloid'] = pdata[basename]['label']
             h5_file[basename].attrs['label_suvr'] = pdata[basename]['label_suvr']
