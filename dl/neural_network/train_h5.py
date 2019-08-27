@@ -99,6 +99,8 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
         print('data split!')
         print(f"Test set, goal of {test_size}, got {np.sum(test_idxs)}")
         print(f"Trai set, goal of {train_size}, got {np.sum(train_idxs)}")
+        train_idxs = np.where(train_idxs)[0]
+        test_idxs = np.where(test_idxs)[0]
         test_data = data[test_idxs]
         test_labels = labels[test_idxs]
         test_labels2 = labels2[test_idxs]
