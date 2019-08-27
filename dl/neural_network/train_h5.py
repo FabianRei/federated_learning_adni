@@ -68,6 +68,10 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
 
     train_data = torch.from_numpy(train_data).type(torch.float32)
     test_data = torch.from_numpy(test_data).type(torch.float32)
+    if len(train_data.shape) > 3:
+        # we then have an extra dimension with channels
+        train_data = train_data.permute(0, 3, 1, 2)
+        test_data = test_data.permute(0, 3, 1, 2)
     num_classes = len(np.unique(labels))
 
     if regression:
@@ -126,8 +130,8 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
 
 
 if __name__ == '__main__':
-    train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data.h5', label_names=['label_suvr', 'label_amyloid'], binning=-1,
-             num_epochs=10, regression=True, lr=0.0001)
+    train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data3.h5', label_names=['label_suvr', 'label_amyloid'], binning=-1,
+             num_epochs=10, regression=False, lr=0.0001)
 
 
 

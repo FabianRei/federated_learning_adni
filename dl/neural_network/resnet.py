@@ -24,7 +24,8 @@ class ResNet50(nn.Module):
         :return:
         """
         # copy to 3 channels
-        x = x.repeat(1, 3, 1, 1)
+        if x.shape[1] == 1:
+            x = x.repeat(1, 3, 1, 1)
         # substract imagenet mean and scale imagenet std
         x -= self.channel_mean
         x /= self.channel_std
@@ -52,7 +53,8 @@ class ResNet50Reg(nn.Module):
         :return:
         """
         # copy to 3 channels
-        x = x.repeat(1, 3, 1, 1)
+        if x.shape[1] == 1:
+            x = x.repeat(1, 3, 1, 1)
         # substract imagenet mean and scale imagenet std
         x -= self.channel_mean
         x /= self.channel_std

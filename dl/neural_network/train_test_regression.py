@@ -31,9 +31,7 @@ def test_reg(batchSize, testData, test_labels, Net, dimIn, includePredictionLabe
         data, target = Variable(data), Variable(target)
         data, target = data.cuda(), target.cuda()
         # data = data.view(-1, dimIn)
-        if len(data.shape) == 4:
-            data = data.permute(0, 3, 1, 2)
-        else:
+        if len(data.shape) == 3:
             data = data.view(-1, 1, dimIn, dimIn)
         # Net.eval()
         net_out = Net(data)
@@ -73,7 +71,8 @@ def train_reg(batch_size, train_data, train_labels, test_data, test_labels, Net,
             data, target = Variable(data), Variable(target)
             data, target = data.cuda(), target.cuda()
             # data = data.view(-1, dimIn)
-            data = data.view(-1, 1, dim_in, dim_in)
+            if len(data.shape) == 3:
+                data = data.view(-1, 1, dim_in, dim_in)
             optimizer.zero_grad()
             # Net.train()
             net_out = Net(data)
