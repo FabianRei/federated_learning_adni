@@ -33,7 +33,7 @@ pickle_fnames = list(pdata.keys())
 nifti_files = glob(f'{nifti_path}/**/*.nii', recursive=True)
 
 sizes = []
-h5_file = h5py.File(os.path.join(outpath, 'slice_data.h5'), 'w')
+h5_file = h5py.File(os.path.join(outpath, 'slice_data_subj.h5'), 'w')
 # labels_amyloid = {}
 # labels_suvr = {}
 write_file = open(os.path.join(outpath, 'faulty_nii_files.txt'), 'w')
@@ -49,7 +49,7 @@ for i, f in enumerate(nifti_files):
             h5_file.create_dataset(basename, data=arr)
             h5_file[basename].attrs['label_amyloid'] = pdata[basename]['label']
             h5_file[basename].attrs['label_suvr'] = pdata[basename]['label_suvr']
-            h5_file[basename].attrs['subj_id'] = pdata[basename]['rid']
+            h5_file[basename].attrs['rid'] = pdata[basename]['rid']
         except Exception as e:
             print(f'{basename} sucks, error is: {e}')
             write_file.write(f'{basename}, {e} \n')
