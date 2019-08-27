@@ -86,7 +86,8 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
     Net.cuda()
     log_path = os.path.join(out_path, f"training_log_{time_stamp}{extra_info}.txt")
     sys.stdout = Logger(log_path)
-    csv_path = os.path.join(out_path, f"train_test_accuracy_{time_stamp}{extra_info}.csv")
+    standard_info = f"_lr_{str(lr).replace('.', '_')}_{'pretrained' if pretrained else 'non_pretrained'}_{'reg_' if regression else ''}{str(binning)+'bins' if binning>0 else ''}{num_epochs}epochs_rod_{str(rate_of_decrease).replace('.', '_')}_da_{decrease_after}"
+    csv_path = os.path.join(out_path, f"train_test_accuracy_{time_stamp}{extra_info}{standard_info}.csv")
     header = ['test_acc', 'train_acc', 'train_loss', 'epoch']
     if len(label_names) > 1:
         header.extend(['test_label_acc_train', 'test_label_acc_test'])
