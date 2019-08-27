@@ -19,7 +19,7 @@ if windows_db:
 else:
     fpath = '/scratch/reith/fl/data'
     prefix = ''
-    outpath = '/scratch/reith/fl/experiments/three_dist40_slices_dataset_full'
+    outpath = '/scratch/reith/fl/experiments/incl_subjects_one_slices_dataset_full'
     os.makedirs(outpath, exist_ok=True)
 
 xml_path = os.path.join(fpath, 'xml')
@@ -44,11 +44,12 @@ for i, f in enumerate(nifti_files):
             img = nib.load(prefix + f)
             sizes.append(img.shape)
             arr = img.get_fdata()
-            # arr = arr[:, :, 50, 0]
-            arr = arr[:, :, [10, 50, 90], 0]
+            arr = arr[:, :, 50, 0]
+            # arr = arr[:, :, [10, 50, 90], 0]
             h5_file.create_dataset(basename, data=arr)
             h5_file[basename].attrs['label_amyloid'] = pdata[basename]['label']
             h5_file[basename].attrs['label_suvr'] = pdata[basename]['label_suvr']
+            h5_file[basename].attrs['subj_id'] = pdata[basename]['rid']
         except Exception as e:
             print(f'{basename} sucks, error is: {e}')
             write_file.write(f'{basename}, {e} \n')
