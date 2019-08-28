@@ -14,12 +14,12 @@ windows_db = False
 if windows_db:
     fpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\trial_sample'
     prefix = '\\\\?\\'
-    outpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\one_slice_dataset'
+    outpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\incl_subjects_site_one_slices_dataset'
     os.makedirs(outpath, exist_ok=True)
 else:
     fpath = '/scratch/reith/fl/data'
     prefix = ''
-    outpath = '/scratch/reith/fl/experiments/incl_subjects_one_slices_dataset_full'
+    outpath = '/scratch/reith/fl/experiments/incl_subjects_site_one_slices_dataset_full'
     os.makedirs(outpath, exist_ok=True)
 
 xml_path = os.path.join(fpath, 'xml')
@@ -50,6 +50,7 @@ for i, f in enumerate(nifti_files):
             h5_file[basename].attrs['label_amyloid'] = pdata[basename]['label']
             h5_file[basename].attrs['label_suvr'] = pdata[basename]['label_suvr']
             h5_file[basename].attrs['rid'] = pdata[basename]['rid']
+            h5_file[basename].attrs['site'] = pdata[basename]['site']
         except Exception as e:
             print(f'{basename} sucks, error is: {e}')
             write_file.write(f'{basename}, {e} \n')
