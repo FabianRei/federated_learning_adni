@@ -48,7 +48,7 @@ def run_jobs(jobs):
 
 if __name__ == '__main__':
     full_start = time.time()
-    h5_file = '/scratch/reith/fl/experiments/three_dist10_slices_dataset_full/slice_data_subj.h5'
+    h5_file = '/scratch/reith/fl/experiments/three_dist10_slices_dataset_full/slice_data.h5'
     jobs = [{'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
             {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
             {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'binning': 20,
@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
 if __name__ == '__main__':
     full_start = time.time()
-    h5_file = '/scratch/reith/fl/experiments/three_dist20_slices_dataset_full/slice_data_subj.h5'
+    h5_file = '/scratch/reith/fl/experiments/three_dist20_slices_dataset_full/slice_data.h5'
     jobs = [{'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
             {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
             {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'binning': 20,
@@ -80,7 +80,7 @@ if __name__ == '__main__':
 
 if __name__ == '__main__':
     full_start = time.time()
-    h5_file = '/scratch/reith/fl/experiments/three_dist40_slices_dataset_full/slice_data_subj.h5'
+    h5_file = '/scratch/reith/fl/experiments/three_dist40_slices_dataset_full/slice_data.h5'
     jobs = [{'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
             {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
             {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'binning': 20,
