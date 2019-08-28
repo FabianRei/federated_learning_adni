@@ -48,6 +48,61 @@ def run_jobs(jobs):
 
 if __name__ == '__main__':
     full_start = time.time()
+    h5_file = '/scratch/reith/fl/experiments/incl_subjects_site_three_slices_dataset_full/slice_data_subj.h5'
+    jobs = [{'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': True, 'num_epochs': 50, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': False, 'num_epochs': 50, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': True, 'decrease_after': 3, 'rate_of_decrease': 0.33, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': False, 'decrease_after': 3, 'rate_of_decrease': 0.33, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001}]
+
+    jobs = [(h5_file, job) for job in jobs]
+    run_jobs(jobs)
+    print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time()-full_start))} hours:min:seconds")
+
+
+if __name__ == '__main__':
+    full_start = time.time()
+    h5_file = '/scratch/reith/fl/experiments/incl_subjects_site_three_slices_dataset_full/slice_data_subj.h5'
+    jobs = [{'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'binning': 20,
+             'lr': 0.001},
+            {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'binning': 20,
+             'lr': 0.001},
+            {'extra_info': '', 'pretrained': True, 'num_epochs': 50, 'label_names': ['label_suvr', 'label_amyloid'],
+             'binning': 20, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': False, 'num_epochs': 50, 'label_names': ['label_suvr', 'label_amyloid'],
+             'binning': 20, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': True, 'decrease_after': 3, 'rate_of_decrease': 0.33,
+             'label_names': ['label_suvr', 'label_amyloid'], 'binning': 20, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': False, 'decrease_after': 3, 'rate_of_decrease': 0.33,
+             'label_names': ['label_suvr', 'label_amyloid'], 'binning': 20, 'lr': 0.001}]
+
+    jobs = [(h5_file, job) for job in jobs]
+    run_jobs(jobs)
+    print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
+
+if __name__ == '__main__':
+    full_start = time.time()
+    h5_file = '/scratch/reith/fl/experiments/incl_subjects_site_three_slices_dataset_full/slice_data_subj.h5'
+    jobs = [{'extra_info': '', 'pretrained': True, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': False, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': True, 'num_epochs': 50, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': False, 'num_epochs': 50, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': True, 'decrease_after': 3, 'rate_of_decrease': 0.33, 'lr': 0.001},
+            {'extra_info': '', 'pretrained': False, 'decrease_after': 3, 'rate_of_decrease': 0.33, 'lr': 0.001}]
+
+    jobs = [(h5_file, job) for job in jobs]
+    run_jobs(jobs)
+    print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
+
+
+
+r'''
+###############################################
+######Past runs################################
+###############################################
+if __name__ == '__main__':
+    full_start = time.time()
     h5_file = '/scratch/reith/fl/experiments/incl_subjects_one_slices_dataset_full/slice_data_subj.h5'
     jobs = [{'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
             {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
@@ -216,13 +271,6 @@ if __name__ == '__main__':
     jobs = [(h5_file, job) for job in jobs]
     run_jobs(jobs)
     print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
-
-
-r'''
-###############################################
-######Past runs################################
-###############################################
-
 
 '''
 
