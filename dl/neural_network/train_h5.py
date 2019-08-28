@@ -41,7 +41,8 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
         if include_subject_ids:
             data, labels, s_ids = get_dataset(h5_path, label_names=label_names, include_subjects=True)
         else:
-            data, labels = get_dataset(h5_path, label_names=label_names)        # create dummy labels2. not perfect, I guess, but good enough :)
+            data, labels = get_dataset(h5_path, label_names=label_names)
+        # create dummy labels2. not perfect, I guess, but good enough :)
         # turns out that I actually don't need the amyloid status label, as the suvr value is obviously sufficient to
         # infer amyloid status. Still keeping it. Why, you ask? Because I can.
         labels2 = np.ones(len(labels))
