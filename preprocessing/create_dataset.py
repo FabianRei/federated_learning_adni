@@ -14,7 +14,7 @@ windows_db = False
 if windows_db:
     fpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\trial_sample'
     prefix = '\\\\?\\'
-    outpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\incl_subjects_site_three_slices_dataset'
+    outpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\dist_10_incl_subjects_site_three_slices_dataset'
     os.makedirs(outpath, exist_ok=True)
 else:
     fpath = '/scratch/reith/fl/data'
@@ -45,7 +45,7 @@ for i, f in enumerate(nifti_files):
             sizes.append(img.shape)
             arr = img.get_fdata()
             # arr = arr[:, :, 50, 0]
-            arr = arr[:, :, [49, 50, 51], 0]
+            arr = arr[:, :, [40, 50, 60], 0]
             h5_file.create_dataset(basename, data=arr)
             h5_file[basename].attrs['label_amyloid'] = pdata[basename]['label']
             h5_file[basename].attrs['label_suvr'] = pdata[basename]['label_suvr']
