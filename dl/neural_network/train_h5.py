@@ -51,10 +51,11 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
     data = data[shuff_idxs]
     labels = labels[shuff_idxs]
     labels2 = labels2[shuff_idxs]
+    standard_info = f"_lr_{str(lr).replace('.', '_')}_{'pretrained' if pretrained else 'non_pretrained'}_{'reg_' if regression else ''}{str(binning)+'bins' if binning>0 else ''}{num_epochs}epochs_rod_{str(rate_of_decrease).replace('.', '_')}_da_{decrease_after}"
     if binning > 0:
         labels_backup = np.copy(labels)
         labels, break_offs = bin_equal(labels, num_bins=binning)
-        with open(os.path.join(out_path, f"original_labels_and_break_offs_{time_stamp}{extra_info}.p"), 'wb') as f:
+        with open(os.path.join(out_path, f"original_labels_and_break_offs_{time_stamp}{extra_info}{standard_info}.p"), 'wb') as f:
             pickle.dump({'original_labels': labels_backup, 'break_offs': break_offs}, f)
     # normalize data
     data -= data.mean()
@@ -139,9 +140,8 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
         train_func = train
 
     Net.cuda()
-    log_path = os.path.join(out_path, f"training_log_{time_stamp}{extra_info}.txt")
+    log_path = os.path.join(out_path, f"training_log_{time_stamp}{extra_info}{standard_info}.txt")
     sys.stdout = Logger(log_path)
-    standard_info = f"_lr_{str(lr).replace('.', '_')}_{'pretrained' if pretrained else 'non_pretrained'}_{'reg_' if regression else ''}{str(binning)+'bins' if binning>0 else ''}{num_epochs}epochs_rod_{str(rate_of_decrease).replace('.', '_')}_da_{decrease_after}"
     csv_path = os.path.join(out_path, f"train_test_accuracy_{time_stamp}{extra_info}{standard_info}.csv")
     header = ['test_acc', 'train_acc', 'train_loss', 'epoch']
     if len(label_names) > 1:
@@ -173,7 +173,7 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
         else:
             csv_writer.write_row(test_acc=test_acc, train_acc=train_acc, train_loss=train_loss, epoch=i)
         if save_pred_labels:
-            pickle_fn = os.path.join(out_path, f"epoch_{i}_pred_labels_train_test_epoch_{time_stamp}{extra_info}.p")
+            pickle_fn = os.path.join(out_path, f"epoch_{i}_pred_labels_train_test_epoch_{time_stamp}{extra_info}{standard_info}.p")
             pickle_object = {'train': train_pred_label, 'test': test_pred_label}
             with open(pickle_fn, 'wb') as f:
                 pickle.dump(pickle_object, f)
