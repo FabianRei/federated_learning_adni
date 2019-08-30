@@ -181,8 +181,9 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
 
 
 if __name__ == '__main__':
-    train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_subj.h5', label_names=['label_suvr', 'label_amyloid'], binning=-1,
-             num_epochs=10, regression=False, lr=0.0001)
+    train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_subj.h5', binning=-1,
+             num_epochs=10, regression=True, lr=0.0001, label_names=['label_suvr', 'label_amyloid'])
+    # label_names=['label_suvr', 'label_amyloid'],
 
 
 

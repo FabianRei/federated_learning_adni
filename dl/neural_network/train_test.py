@@ -36,6 +36,7 @@ def test(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=F
         # Net.eval()
         net_out = Net(data)
         prediction = net_out.max(1)[1]
+        softmax_prediction = np.exp(net_out.cpu().detach().numpy())
         testAcc = list((prediction == target).cpu().numpy())
         if not sum(testAcc) == len(target) and False:
             print(prediction.cpu().numpy()[testAcc == 0])
@@ -49,7 +50,7 @@ def test(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=F
     if includePredictionLabels:
         predictions = [int(p) for p in predictions]
         test_labels = [int(l) for l in test_labels]
-        return np.mean(allAccuracy), np.stack((predictions, test_labels)).T
+        return np.mean(allAccuracy), np.stack((predictions, test_labels, softmax_prediction[:, 0], softmax_prediction[:, 1])).T
     else:
         return np.mean(allAccuracy)
 

@@ -39,8 +39,8 @@ def viz_training(folder, identifier='', sort_by='epoch', title='default', train_
     test_acc = get_csv_column(csv_path, test_acc, sort_by=sort_by)
     epochs = get_csv_column(csv_path, 'epoch', sort_by=sort_by)
 
-    plt.plot(epochs, train_acc, label='Accuracy train data')
-    plt.plot(epochs, test_acc, label='Accuracy test data')
+    plt.plot(epochs, train_acc, label='Train data')
+    plt.plot(epochs, test_acc, label='Test data')
 
     plt.legend(frameon=True, loc='upper left', fontsize='small')
     fig.savefig(os.path.join(folder, f'{fname}.png'), dpi=200)
@@ -59,7 +59,9 @@ def find_all_identifiers(folder, file_ending='.csv', within_file_pattern=''):
 
 
 if __name__ == '__main__':
-    fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\more_one_slice_dataset'
+    # fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\more_one_slice_dataset'
+    # fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\incl_subjects_one_slices_dataset_full'
+    fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\dist_40_incl_subjects_site_three_slices_dataset_full'
     # identifier = r'07-30_09-40_pretrain_normalizeData'
     # viz_training(fpath, identifier)
     ids = find_all_identifiers(fpath)
