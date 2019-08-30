@@ -178,6 +178,8 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
             with open(pickle_fn, 'wb') as f:
                 pickle.dump(pickle_object, f)
         print(f"Test accuracy is {test_acc * 100:.2f} percent")
+    model_out_path = os.path.join(out_path, f'resnet_model_{time_stamp}{extra_info}{standard_info}.pth')
+    torch.save(Net, model_out_path)
 
 
 if __name__ == '__main__':
