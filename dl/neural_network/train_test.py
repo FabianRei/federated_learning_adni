@@ -50,10 +50,12 @@ def test(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=F
         Net.train()
     print(f"Test accuracy is {np.mean(allAccuracy)}")
     if includePredictionLabels:
-        predictions = [int(p) for p in predictions]
-        test_labels = [int(l) for l in test_labels]
+        predictions = np.array([int(p) for p in predictions])
+        predictions = np.expand_dims(predictions, axis=1)
+        test_labels = np.array([int(l) for l in test_labels])
+        test_labels = np.expand_dims(test_labels, axis=1)
         softmax_predictions = np.array(softmax_predictions)
-        return np.mean(allAccuracy), np.stack((predictions, test_labels, softmax_predictions[:, 0], softmax_predictions[:, 1])).T
+        return np.mean(allAccuracy), np.concatenate((predictions, test_labels, softmax_predictions), axis=1)
     else:
         return np.mean(allAccuracy)
 
