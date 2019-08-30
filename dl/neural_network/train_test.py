@@ -24,6 +24,7 @@ def test(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=F
     allWrongs = []
     predictions = []
     labels = []
+    softmax_predictions = []
     if test_eval:
         Net.eval()
     for batch_idx, (data, target) in enumerate(batch_gen(testData, test_labels, batchSize, shuffle=False)):
@@ -43,6 +44,7 @@ def test(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=F
             print(target.cpu().numpy()[testAcc==0])
         allAccuracy.extend(testAcc)
         predictions.extend(prediction)
+        softmax_predictions.extend(list(softmax_prediction))
         labels.extend(target)
     if test_eval:
         Net.train()
@@ -50,7 +52,8 @@ def test(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=F
     if includePredictionLabels:
         predictions = [int(p) for p in predictions]
         test_labels = [int(l) for l in test_labels]
-        return np.mean(allAccuracy), np.stack((predictions, test_labels, softmax_prediction[:, 0], softmax_prediction[:, 1])).T
+        softmax_predictions = np.array(softmax_predictions)
+        return np.mean(allAccuracy), np.stack((predictions, test_labels, softmax_predictions[:, 0], softmax_predictions[:, 1])).T
     else:
         return np.mean(allAccuracy)
 
