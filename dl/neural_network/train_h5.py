@@ -109,6 +109,10 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
         train_data = data[train_idxs]
         train_labels = labels[train_idxs]
         train_labels2 = labels2[train_idxs]
+        subj_out_path = os.path.join(out_path, f'subject_split_{time_stamp}{extra_info}{standard_info}.p')
+        subj_meta_data = {'subj_id': s_ids, 'test_idxs': test_idxs, 'train_idxs': train_idxs}
+        with open(subj_out_path, 'wb') as f:
+            pickle.dump(subj_meta_data)
     else:
         cutoff = int(len(data) * test_split)
         test_data = data[:cutoff]
