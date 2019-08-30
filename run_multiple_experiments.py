@@ -45,17 +45,7 @@ def run_jobs(jobs):
     for proc in process_dict.values():
         proc.join()
 
-if __name__ == '__main__':
-    full_start = time.time()
-    h5_file = '/scratch/reith/fl/experiments/incl_subjects_site_one_slices_dataset_full/slice_data_subj.h5'
-    jobs = [{'extra_info': '', 'pretrained': True, 'lr': 0.001},
-            {'extra_info': '', 'pretrained': False, 'lr': 0.001}]
 
-    jobs = [(h5_file, job) for job in jobs]
-    run_jobs(jobs)
-    print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
-
-'''
 if __name__ == '__main__':
     full_start = time.time()
     h5_file = '/scratch/reith/fl/experiments/incl_subjects_site_one_slices_dataset_full/slice_data_subj.h5'
@@ -135,7 +125,6 @@ if __name__ == '__main__':
     jobs = [(h5_file, job) for job in jobs]
     run_jobs(jobs)
     print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
-'''
 
 
 r'''
