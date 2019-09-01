@@ -38,7 +38,7 @@ def viz_training(folder, identifier='', sort_by='epoch', title='default', train_
     train_acc = get_csv_column(csv_path, train_acc, sort_by=sort_by)
     test_acc = get_csv_column(csv_path, test_acc, sort_by=sort_by)
     epochs = get_csv_column(csv_path, 'epoch', sort_by=sort_by)
-
+    epochs += 1
     plt.plot(epochs, train_acc, label='Train data')
     plt.plot(epochs, test_acc, label='Test data')
 
@@ -59,18 +59,24 @@ def find_all_identifiers(folder, file_ending='.csv', within_file_pattern=''):
 
 
 if __name__ == '__main__':
-    # fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\more_one_slice_dataset'
-    # fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\incl_subjects_one_slices_dataset_full'
-    fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\dist_40_incl_subjects_site_three_slices_dataset_full'
-    # identifier = r'07-30_09-40_pretrain_normalizeData'
-    # viz_training(fpath, identifier)
-    ids = find_all_identifiers(fpath)
-    for ident in ids:
-        viz_training(fpath, ident)
-    ids_bin = find_all_identifiers(fpath, file_ending='.csv', within_file_pattern='bin')
-    ids_reg = find_all_identifiers(fpath, file_ending='.csv', within_file_pattern='reg')
-    for ident in ids_reg:
-        viz_training(fpath, ident, train_acc='test_label_acc_train', test_acc='test_label_acc_test', fname_addition='_reg_test')
-    for ident in ids_bin:
-        viz_training(fpath, ident, train_acc='test_label_acc_train', test_acc='test_label_acc_test',
-                     fname_addition='_bin_test')
+    fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments'
+    paths = glob(fpath + r"\*site*")
+    for p in paths:
+
+        # fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\more_one_slice_dataset'
+        # fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\incl_subjects_one_slices_dataset_full'
+        # fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\dist_40_incl_subjects_site_three_slices_dataset_full'
+        # identifier = r'07-30_09-40_pretrain_normalizeData'
+        # viz_training(fpath, identifier)
+        fpath = p
+        ids = find_all_identifiers(fpath)
+        for ident in ids:
+            viz_training(fpath, ident)
+        ids_bin = find_all_identifiers(fpath, file_ending='.csv', within_file_pattern='bin')
+        ids_reg = find_all_identifiers(fpath, file_ending='.csv', within_file_pattern='reg')
+        for ident in ids_reg:
+            viz_training(fpath, ident, train_acc='test_label_acc_train', test_acc='test_label_acc_test', fname_addition='_reg_test')
+        for ident in ids_bin:
+            viz_training(fpath, ident, train_acc='test_label_acc_train', test_acc='test_label_acc_test',
+                         fname_addition='_bin_test')
+
