@@ -48,6 +48,16 @@ def run_jobs(jobs):
 
 if __name__ == '__main__':
     full_start = time.time()
+    h5_file = '/scratch/reith/fl/experiments/dist_10_incl_subjects_site_three_slices_dataset_full/slice_data_subj.h5'
+    jobs = [{'extra_info': '', 'pretrained': False, 'lr': 0.001}]
+
+
+r'''
+###############################################
+######Past runs################################
+###############################################
+if __name__ == '__main__':
+    full_start = time.time()
     h5_file = '/scratch/reith/fl/experiments/incl_subjects_site_one_slices_dataset_full/slice_data_subj.h5'
     jobs = [{'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
             {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001},
@@ -125,11 +135,6 @@ if __name__ == '__main__':
     jobs = [(h5_file, job) for job in jobs]
     run_jobs(jobs)
     print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
-
-
-r'''
-###############################################
-######Past runs################################
 ###############################################
 if __name__ == '__main__':
     full_start = time.time()
