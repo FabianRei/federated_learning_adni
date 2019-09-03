@@ -58,8 +58,11 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
         with open(os.path.join(out_path, f"original_labels_and_break_offs_{time_stamp}{extra_info}{standard_info}.p"), 'wb') as f:
             pickle.dump({'original_labels': labels_backup, 'break_offs': break_offs}, f)
     # normalize data
+    print(f'data mean is {data.mean()}')
     data -= data.mean()
+    print(f'data std is {data.std()}')
     data /= data.std()
+    import time; time.sleep(20)
 
     if windows_db:
         data = data[:100]
