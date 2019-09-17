@@ -9,6 +9,7 @@ import GPUtil
 import multiprocessing as mp
 import time
 import datetime
+from glob import glob
 
 
 def job_generator(jobs):
@@ -48,11 +49,22 @@ def run_jobs(jobs):
 
 if __name__ == '__main__':
     full_start = time.time()
-    h5_file = '/scratch/reith/fl/experiments/incl_subjects_site_three_slices_dataset_full/slice_data_subj.h5'
-    jobs = [{'extra_info': '', 'pretrained': True, 'lr': 0.001},
-            {'extra_info': '', 'pretrained': False, 'lr': 0.001}]
-    jobs = [(h5_file, job) for job in jobs]
-    run_jobs(jobs)
+    super_folder = '/scratch/reith/fl/experiments/seeds'
+    sub_folders = glob(os.path.join(super_folder, '*seed*'))
+    print(sub_folders)
+    for sub in sub_folders:
+        seed = int(sub.split('_')[-1])
+        jobs = [
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001, 'seed': seed},
+            {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001, 'seed': seed},
+            {'extra_info': '', 'pretrained': True, 'lr': 0.001, 'seed': seed},
+            {'extra_info': '', 'pretrained': False, 'lr': 0.001, 'seed': seed}]
+        h5_files = glob(os.path.join(sub, '*_*'))
+        print(h5_files)
+        for h5_file in h5_files:
+            process_jobs = [(h5_file, job) for job in jobs]
+            print(process_jobs)
+            run_jobs(process_jobs)
     print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
 
 
