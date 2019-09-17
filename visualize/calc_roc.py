@@ -123,6 +123,7 @@ def calc_sensitivity(tt):
 #
 #     print('nice')
 if __name__ == '__main__':
+    # calculate ROC
     fpath = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments'
     paths = glob(fpath + r"\*site*")
     for p in paths:
