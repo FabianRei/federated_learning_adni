@@ -59,7 +59,7 @@ if __name__ == '__main__':
             {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001, 'seed': seed},
             {'extra_info': '', 'pretrained': True, 'lr': 0.001, 'seed': seed},
             {'extra_info': '', 'pretrained': False, 'lr': 0.001, 'seed': seed}]
-        h5_files = glob(os.path.join(sub, '*_*'))
+        h5_files = glob(os.path.join(sub, '*_*/**/*.h5'))
         print(h5_files)
         for h5_file in h5_files:
             process_jobs = [(h5_file, job) for job in jobs]
