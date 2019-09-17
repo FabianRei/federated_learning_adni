@@ -13,14 +13,17 @@ import sys
 import os
 import GPUtil
 import pickle
+# set deterministic mode for cudnn
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
 
 
 def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='', lr=0.01, decrease_after=10,
              rate_of_decrease=0.1, gpu_device=-1, save_pred_labels=True, test_split=0.2, pretrained=True,
-             batch_size=32, binning=-1, regression=False, include_subject_ids=True):
-    windows_db = False
+             batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1):
+    windows_db = True
     if windows_db:
-        h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data.h5'
+        h5_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\slice_data_subj.h5'
 
     # chose random when -1, otherwise the selected id
     if gpu_device < 0:
@@ -46,11 +49,18 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
         # turns out that I actually don't need the amyloid status label, as the suvr value is obviously sufficient to
         # infer amyloid status. Still keeping it. Why, you ask? Because I can.
         labels2 = np.ones(len(labels))
-    np.random.seed(42)
+    # if there is a seed, we now set a universal seed. We later on set more seeds to ensure the same shuffling/random
+    # neural network initialization for all runs. We do this by multiplying the seed with prime numbers larger than
+    # 100. This ensures that all seeds from 1 to 100 will not run into the same multiples.
+    if not seed == -1:
+        np.random.seed(seed*101)
+        torch.manual_seed(seed*101)
     shuff_idxs = np.random.permutation(len(data))
     data = data[shuff_idxs]
     labels = labels[shuff_idxs]
     labels2 = labels2[shuff_idxs]
+    if include_subject_ids:
+        s_ids = s_ids[shuff_idxs]
     standard_info = f"_lr_{str(lr).replace('.', '_')}_{'pretrained' if pretrained else 'non_pretrained'}_{'reg_' if regression else ''}{str(binning)+'bins' if binning>0 else ''}{num_epochs}epochs_rod_{str(rate_of_decrease).replace('.', '_')}_da_{decrease_after}"
     if binning > 0:
         labels_backup = np.copy(labels)
@@ -62,22 +72,32 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
     data -= data.mean()
     print(f'data std is {data.std()}')
     data /= data.std()
-    import time; time.sleep(20)
+    # import time; time.sleep(20)
 
     if windows_db:
-        data = data[:100]
-        labels = labels[:100]
-        labels2 = labels2[:100]
+        win_db_limit = 5000
+        data = data[:win_db_limit]
+        labels = labels[:win_db_limit]
+        labels2 = labels2[:win_db_limit]
+        if include_subject_ids:
+            s_ids = s_ids[:win_db_limit]
     # We try to not have the same subject in train and test set. To do so, we iteratively assign from subjects with a
     # high number of scans (max is 5) to subjects with a low number of scans (1) to train and test set. If the
     # train-test split is 4 to 1, we assign 4 subjects to train and one to test in each iteration etc. etc.
     if include_subject_ids:
         ratio = int(np.round((1-test_split)/test_split))
         n, c = np.unique(s_ids, return_counts=True)
-        sort_unique = np.argsort(n)[::-1]
+        # randomness is preserved within chunks of equal count. As numpy sorts the unique ids for a reason that I
+        # cannot understand, we shuffle things again:
+        if seed != -1:
+            np.random.seed(seed*103)
+        subj_shuff_idxs = np.random.permutation(len(n))
+        n = n[subj_shuff_idxs]
+        c = c[subj_shuff_idxs]
+        sort_unique = np.argsort(c)[::-1]
         n = list(n[sort_unique])
         c = list(c[sort_unique])
-        test_size = int(len(data) * test_split)
+        test_size = int(len(data)*test_split)
         train_size = len(data)-test_size
         test_idxs = np.zeros(len(data)).astype(np.int)
         train_idxs = np.zeros(len(data)).astype(np.int)
@@ -113,7 +133,8 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
         train_labels = labels[train_idxs]
         train_labels2 = labels2[train_idxs]
         subj_out_path = os.path.join(out_path, f'subject_split_{time_stamp}{extra_info}{standard_info}.p')
-        subj_meta_data = {'subj_id': s_ids, 'test_idxs': test_idxs, 'train_idxs': train_idxs}
+        subj_meta_data = {'subj_id': s_ids, 'test_idxs': test_idxs, 'train_idxs': train_idxs,
+                          'shuffle_permutation': shuff_idxs, 'subj_shuffle_idxs': subj_shuff_idxs}
         with open(subj_out_path, 'wb') as f:
             pickle.dump(subj_meta_data, f)
     else:
@@ -132,7 +153,9 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
         train_data = train_data.permute(0, 3, 1, 2)
         test_data = test_data.permute(0, 3, 1, 2)
     num_classes = len(np.unique(labels))
-
+    # set separate seed for initialization
+    if seed != -1:
+        torch.manual_seed(seed*107)
     if regression:
         test_labels = torch.from_numpy(test_labels).type(torch.float32)
         train_labels = torch.from_numpy(train_labels).type(torch.float32)
@@ -154,7 +177,11 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
     if len(label_names) > 1:
         header.extend(['test_label_acc_train', 'test_label_acc_test'])
     csv_writer = CsvWriter(csv_path, header=header)
-
+    # set separate seed to ensure the same batch generation, as seed for neural network initialization might now be
+    # varying depending on neural network architecture
+    if seed != -1:
+        np.random.seed(seed*109)
+        torch.manual_seed(seed*109)
     for i in range(num_epochs):
         if i % decrease_after == 0:
             if i > 0:
@@ -190,7 +217,7 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
 
 
 if __name__ == '__main__':
-    train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_subj.h5', pretrained=False, extra_info='', lr=0.001, binning=4, label_names=['label_suvr', 'label_amyloid'])
+    train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\incl_subjects_site_one_slices_dataset\slice_data_subj.h5', pretrained=False, extra_info='', lr=0.001, regression=True, label_names=['label_suvr', 'label_amyloid'], seed=1)
     # label_names=['label_suvr', 'label_amyloid'],
 
 
