@@ -57,8 +57,8 @@ if __name__ == '__main__':
         jobs = [
             {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001, 'seed': seed},
             {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001, 'seed': seed},
-            {'extra_info': '', 'pretrained': True, 'lr': 0.001, 'seed': seed},
-            {'extra_info': '', 'pretrained': False, 'lr': 0.001, 'seed': seed}]
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.001, 'seed': seed},
+            {'extra_info': '', 'pretrained': False, 'label_names': ['label_amyloid'], 'lr': 0.001, 'seed': seed}]
         h5_files = glob(f'{sub}/*_*/*.h5')
         # import pdb; pdb.set_trace()
         print(h5_files)
