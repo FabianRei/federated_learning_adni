@@ -4,7 +4,7 @@ from dl.neural_network.train_test import train
 from dl.neural_network.train_test_regression import train_reg
 from dl.data.bin_equal import bin_equal
 from datetime import datetime
-from dl.data.logging import Logger, CsvWriter
+from dl.data.project_logging import Logger, CsvWriter
 import numpy as np
 import torch
 from torch import nn
@@ -18,7 +18,7 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
 
-def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='', lr=0.01, decrease_after=10,
+def train_h5(h5_path, num_epochs=30, label_names=('label_amyloid'), extra_info='', lr=0.01, decrease_after=10,
              rate_of_decrease=0.1, gpu_device=-1, save_pred_labels=True, test_split=0.2, pretrained=True,
              batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1):
     windows_db = False
@@ -33,7 +33,7 @@ def train_h5(h5_path, num_epochs=30, label_names=['label_amyloid'], extra_info='
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_device)
     out_path = os.path.dirname(h5_path)
     time_stamp = datetime.now().strftime('%m-%d_%H-%M')
-    # if there are two labels to be fetched, we assume that the first one is trained on and the second one is for
+    # if there are two labels to be fetched, we assume that the first one is for training and the second one is for
     # testing
     if len(label_names) > 1:
         if include_subject_ids:

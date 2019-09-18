@@ -1,7 +1,7 @@
 from dl.neural_network.resnet import ResNet50
 from dl.neural_network.train_test import train
 from datetime import datetime
-from dl.data.logging import Logger, CsvWriter
+from dl.data.project_logging import Logger, CsvWriter
 import numpy as np
 import torch
 from torch import nn
