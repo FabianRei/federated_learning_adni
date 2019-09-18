@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 import os
 import pandas as pd
-from dl.data.logging import CsvWriter
+from dl.data.project_logging import CsvWriter
 
 # label_path = '/share/wandell/data/reith/federated_learning/labels_detailled.pickle'
 label_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\labels_detailled_suvr.pickle'

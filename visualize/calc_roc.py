@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import os
 from glob import glob
 import re
-from dl.data.logging import CsvWriter
+from dl.data.project_logging import CsvWriter
 
 
 def calc_rocs_epoch(folder, epoch=29, bins=-1):

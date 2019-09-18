@@ -1,5 +1,5 @@
-import h5py
 import numpy as np
+import h5py
 
 
 def get_dataset(h5_path, label_names=['label_amyloid'], limit=-1, include_subjects=False):
@@ -21,6 +21,6 @@ def get_dataset(h5_path, label_names=['label_amyloid'], limit=-1, include_subjec
 
 if __name__ == '__main__':
     fp = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data.h5'
-    dset, labels = get_dataset(fp)
+    # dset, labels = get_dataset(fp)
     dset, l1, l2 = get_dataset(fp, label_names=['label_amyloid', 'label_suvr'])
     print('done')
