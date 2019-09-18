@@ -49,7 +49,7 @@ def run_jobs(jobs):
 
 if __name__ == '__main__':
     full_start = time.time()
-    super_folder = '/scratch/reith/fl/experiments/seeds'
+    super_folder = '/scratch/reith/fl/experiments/seeds2'
     sub_folders = glob(os.path.join(super_folder, '*seed*'))
     print(sub_folders)
     for sub in sub_folders:
