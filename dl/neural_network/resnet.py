@@ -2,6 +2,7 @@ from torchvision import models
 from torch import nn
 import torch.nn.functional as F
 import torch
+from fnmatch import fnmatch
 
 
 class ResNet50(nn.Module):
@@ -60,4 +61,15 @@ class ResNet50Reg(nn.Module):
         x /= self.channel_std
         x = self.ResNet(x)
         return x  # F.log_softmax(x, dim=1)
+
+    def freeze_except_fc(self):
+        for name, param in self.named_parameters():
+            if fnmatch(name, '*fc.*'):
+                param.requires_grad = True
+            else:
+                param.requires_grad = False
+
+    def unfreeze_all(self):
+        for param in self.parameters():
+            param.requires_grad = True
 

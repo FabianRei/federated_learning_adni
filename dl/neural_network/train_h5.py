@@ -20,8 +20,8 @@ torch.backends.cudnn.benchmark = False
 
 def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, decrease_after=10,
              rate_of_decrease=0.1, gpu_device=-1, save_pred_labels=True, test_split=0.2, pretrained=True,
-             batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1):
-    windows_db = False
+             batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1, freeze_epochs=-1):
+    windows_db = True
     if windows_db:
         h5_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\slice_data_subj.h5'
 
@@ -183,6 +183,12 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
         np.random.seed(seed*109)
         torch.manual_seed(seed*109)
     for i in range(num_epochs):
+        # we freeze all parameters for some epochs to fine tune the last layer first
+        if freeze_epochs > 0:
+            if i in range(freeze_epochs):
+                Net.freeze_except_fc()
+            elif i == freeze_epochs:
+                Net.unfreeze_all()
         if i % decrease_after == 0:
             if i > 0:
                 lr = lr*rate_of_decrease

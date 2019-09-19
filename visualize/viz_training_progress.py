@@ -153,7 +153,7 @@ def write_raw2csv(dict, id, out_path):
                 writer.writerow(row)
 
 if __name__ == '__main__':
-    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds'
+    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_combined'
     fpaths = glob(os.path.join(super_path, '*seed*'))
     dist_10 = glob(rf'{super_path}\*seed*\dist_10\*.csv')
     one_slice = glob(rf'{super_path}\*seed*\one_slice\*.csv')
