@@ -33,6 +33,16 @@ class ResNet50(nn.Module):
         x = self.ResNet(x)
         return F.log_softmax(x, dim=1)
 
+    def freeze_except_fc(self):
+        for name, param in self.named_parameters():
+            if fnmatch(name, '*fc.*'):
+                param.requires_grad = True
+            else:
+                param.requires_grad = False
+
+    def unfreeze_all(self):
+        for param in self.parameters():
+            param.requires_grad = True
 
 class ResNet50Reg(nn.Module):
     def __init__(self, pretrained=True, num_classes=1):
