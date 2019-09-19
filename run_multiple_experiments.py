@@ -59,7 +59,7 @@ if __name__ == '__main__':
             {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001, 'seed': seed, 'freeze_epochs': 10},
             {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.001, 'seed': seed, 'freeze_epochs': 10}]
         h5_files = glob(f'{sub}/*_*/*.h5')
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         print(h5_files)
         for h5_file in h5_files:
             process_jobs = [(h5_file, job) for job in jobs]
