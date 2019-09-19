@@ -51,7 +51,7 @@ if __name__ == '__main__':
     full_start = time.time()
     super_folder = '/scratch/reith/fl/experiments/seeds2'
     sub_folders = glob(os.path.join(super_folder, '*seed*'))
-    suf_folders = '/scratch/reith/fl/experiments/transfer_experiment/seed_10'
+    sub_folders = ['/scratch/reith/fl/experiments/transfer_experiment/seed_10']
     print(sub_folders)
     for sub in sub_folders:
         seed = int(sub.split('_')[-1])
