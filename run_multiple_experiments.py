@@ -52,12 +52,13 @@ if __name__ == '__main__':
     super_folder = '/scratch/reith/fl/experiments/seeds2'
     sub_folders = glob(os.path.join(super_folder, '*seed*'))
     sub_folders = ['/scratch/reith/fl/experiments/transfer_experiment/seed_10']
+    sub_folders = ['/scratch/reith/fl/experiments/transfer_experiment/seed_higher_bs_freeze_5_epochs_10']
     print(sub_folders)
     for sub in sub_folders:
         seed = int(sub.split('_')[-1])
         jobs = [
-            {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001, 'seed': seed, 'freeze_epochs': 10},
-            {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.001, 'seed': seed, 'freeze_epochs': 10}]
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001, 'seed': seed, 'freeze_epochs': 5, 'batch_size': 128},
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.001, 'seed': seed, 'freeze_epochs': 5, 'batch_size': 128}]
         h5_files = glob(f'{sub}/*_*/*.h5')
         # import pdb; pdb.set_trace()
         print(h5_files)
