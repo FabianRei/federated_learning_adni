@@ -57,8 +57,8 @@ if __name__ == '__main__':
     for sub in sub_folders:
         seed = int(sub.split('_')[-1])
         jobs = [
-            {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001, 'seed': seed, 'freeze_epochs': 5, 'batch_size': 128},
-            {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.001, 'seed': seed, 'freeze_epochs': 5, 'batch_size': 128}]
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.001, 'seed': seed, 'freeze_epochs': 5, 'batch_size': 64},
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.001, 'seed': seed, 'freeze_epochs': 5, 'batch_size': 64}]
         h5_files = glob(f'{sub}/*_*/*.h5')
         # import pdb; pdb.set_trace()
         print(h5_files)
