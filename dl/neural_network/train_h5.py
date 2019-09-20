@@ -152,14 +152,20 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
         # we then have an extra dimension with channels
         train_data = train_data.permute(0, 3, 1, 2)
         test_data = test_data.permute(0, 3, 1, 2)
+        # find out the number of channels.
+        num_chan_input = train_data.shape[1]
+    else:
+        # 3 is the default, which we also use, when there's only one input channel
+        num_chan_input = 3
     num_classes = len(np.unique(labels))
+
     # set separate seed for initialization
     if seed != -1:
         torch.manual_seed(seed*107)
     if regression:
         test_labels = torch.from_numpy(test_labels).type(torch.float32)
         train_labels = torch.from_numpy(train_labels).type(torch.float32)
-        Net = ResNet50Reg(pretrained=pretrained, num_classes=1)
+        Net = ResNet50Reg(pretrained=pretrained, num_classes=1, num_input=num_chan_input)
         criterion = nn.MSELoss()
         train_func = train_reg
     else:
