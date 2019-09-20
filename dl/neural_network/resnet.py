@@ -72,6 +72,8 @@ class ResNet50Reg(nn.Module):
             new_input = nn.Conv2d(9, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
             new_input.weight.data = input_weights
             self.ResNet.conv1 = new_input
+            self.channel_mean = self.channel_mean.repeat(1,3,1,1)
+            self.channel_std = self.channel_std.repeat(1,3,1,1)
         # pytorch's standard implementation throws errors at some image sizes..
         self.ResNet.avgpool = nn.AdaptiveAvgPool2d(1)
         self.ResNet.fc = nn.Linear(in_features=2048, out_features=num_classes, bias=True)
