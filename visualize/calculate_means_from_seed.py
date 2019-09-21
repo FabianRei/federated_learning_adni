@@ -7,6 +7,9 @@ import re
 from fnmatch import fnmatch
 from fnmatch import filter
 import csv
+import pickle
+from visualize.calc_roc import cutoff_youdens_j_tt
+
 
 
 def get_csv_column(csv_path, col_name, sort_by=None, exclude_from=None):
@@ -121,7 +124,42 @@ def get_mean_std(csv_files, cols=['train_acc', 'test_acc'], sort_by='epoch'):
         result_dict['mean_' + col] = mean_res
         result_dict['std_' + col] = std_res
         raw_dict[col] = raw_res
+    stat_keys = ['j_score', 'threshold', 'sensitivity', 'specificity', 'roc_auc']
+    stats = get_more_statistics(csv_files)
+    for i, k in enumerate(stat_keys):
+        result_dict['mean_' + k] = np.mean(stats[i])
+        result_dict['std_' + k] = np.std(stats[i])
+        raw_dict[k] = stats[i]
     return result_dict, raw_dict
+
+
+def get_more_statistics(csv_files):
+    j_scores = []
+    sensitivities = []
+    specificities = []
+    roc_aucs = []
+    thresholds = []
+    for f in csv_files:
+        dir, name = os.path.split(f)
+        name = '_'.join(name.split('.')[0].split('_')[3:])
+        pickle_data = glob(os.path.join(dir, f'*29*{name}*.p'))[0]
+        with open(pickle_data, 'rb') as p:
+            pred_labels = pickle.load(p)
+        tt = pred_labels['test']
+        # adjust for tt, if from regression
+        if tt.shape[1] == 2:
+            tt2 = np.copy(tt)
+            tt2[:,1] = tt[:, 1] > 1.11
+            tt = np.concatenate((tt2, tt), axis=1)
+            tt = tt[:, [0, 1, 3, 2]]
+        # j_score, threshold, sensitivity, specificity, roc_auc
+        j_score, threshold, sensitivity, specificity, roc_auc = cutoff_youdens_j_tt(tt)
+        j_scores.append(j_score)
+        sensitivities.append(sensitivity)
+        specificities.append(specificity)
+        roc_aucs.append(roc_auc)
+        thresholds.append(threshold)
+    return j_scores, thresholds, sensitivities, specificities, roc_aucs
 
 
 def write_args2csv(dict, id, out_path):
@@ -134,7 +172,14 @@ def write_args2csv(dict, id, out_path):
         writer = csv.DictWriter(csvfile, delimiter=',', lineterminator='\n', fieldnames=headers)
         writer.writeheader()
         for i in range(len(dict[headers[0]])):
-            row = {k: v[i] for k, v in dict.items()}
+            row = {}
+            for k, v in dict.items():
+                try:
+                    val = v[i]
+                except:
+                    val = v
+                row[k] = val
+            # row = {k: v[i] for k, v in dict.items()}
             writer.writerow(row)
 
 
@@ -148,20 +193,27 @@ def write_raw2csv(dict, id, out_path):
         with open(csv_path, 'a') as csvfile:
             writer = csv.DictWriter(csvfile, delimiter=',', lineterminator='\n', fieldnames=headers)
             writer.writeheader()
-            for i in range(len(v[0])):
-                row = {k: val[i] for k, val in zip(headers, v)}
+            if isinstance(v[0], list) or isinstance(v[0], np.ndarray):
+                for i in range(len(v[0])):
+                    row = {k: val[i] for k, val in zip(headers, v)}
+                    writer.writerow(row)
+            else:
+                row = {k: val for k, val in zip(headers, v)}
                 writer.writerow(row)
 
 
 if __name__ == '__main__':
     super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_10-90'
     super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_lower_lr'
+    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_10-90_lower_lr'
     fpaths = glob(os.path.join(super_path, '*seed*'))
     dist_10 = glob(rf'{super_path}\*seed*\dist_10\*.csv')
     one_slice = glob(rf'{super_path}\*seed*\one_slice\*.csv')
     three_slice = glob(rf'{super_path}\*seed*\three_slice\*.csv')
     nine_slice = glob(rf'{super_path}\*seed*\slices_10-90\*.csv')
-    csv_dict = {'dist_10': dist_10, 'one_slice': one_slice, 'three_slice': three_slice, 'nine_slice': nine_slice}
+    two_seven_slice = glob(rf'{super_path}\*seed*\slices_27\*.csv')
+    csv_dict = {'dist_10': dist_10, 'one_slice': one_slice, 'three_slice': three_slice, 'nine_slice': nine_slice,
+                'two_seven_slice': two_seven_slice}
 
     for key, val in csv_dict.items():
         if not val:

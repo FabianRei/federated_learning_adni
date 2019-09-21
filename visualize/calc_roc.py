@@ -30,6 +30,13 @@ def calc_rocs_epoch(folder, epoch=29, bins=-1):
         calc_roc(tt, fname)
 
 
+def calc_roc_auc(tt):
+    pred = tt[:, 3]
+    lab = tt[:, 1]
+    fpr, tpr, thres = roc_curve(lab, pred)
+    roc_auc = auc(fpr, tpr)
+    return roc_auc
+
 def calc_roc(tt, fname):
     pred = tt[:,3]
     lab = tt[:,1]
@@ -95,7 +102,8 @@ def cutoff_youdens_j_tt(tt):
     tt[:,0] = pred >= threshold
     sensitivity = calc_sensitivity(tt)
     specificity = calc_specificity(tt)
-    return j_score, threshold, sensitivity, specificity
+    roc_auc = calc_roc_auc(tt)
+    return j_score, threshold, sensitivity, specificity, roc_auc
 
 
 def cutoff_youdens_j(fp, bins=-1):

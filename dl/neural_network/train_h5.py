@@ -72,8 +72,12 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
     data -= data.mean()
     print(f'data std is {data.std()}')
     data /= data.std()
+    # pretrained data needs input to be in the range [0,1]
+    if pretrained:
+        data += data.min()
+        data /= data.max()
+        print(f'skewed data into min: {data.min()} and max: {data.max()}')
     # import time; time.sleep(20)
-
     if windows_db:
         win_db_limit = 5000
         data = data[:win_db_limit]

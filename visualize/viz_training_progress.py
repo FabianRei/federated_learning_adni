@@ -77,9 +77,10 @@ def viz_training_from_csv(csv_path, train_acc, test_acc, include_loss, train_los
         ax2 = ax1.twinx()
         if fnmatch(csv_name, '*reg*'):
             ax2.set_ylabel('Loss (MSE)')
-            ax2.set_ylim([-0.005, 1])
+            ax2.set_ylim([-0.005, 0.4])
         else:
             ax2.set_ylabel('Loss (NLL)')
+            ax2.set_ylim([-0.05, 0.6])
         loss = get_csv_column(csv_path, train_loss, sort_by=sort_by)
         ax2.plot(epochs, loss, label='Train data loss', color=colors[2])
         if test_loss != '':
@@ -139,7 +140,7 @@ def write_csv_row(resultCSV, testAcc, accOptimal, d1, d2, dataContrast, nn_dprim
 
 
 if __name__ == '__main__':
-    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds\summary'
+    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_lower_lr\summary'
     fpaths = glob(os.path.join(super_path, '*_*'))
     for fpath in fpaths:
         # binary case
