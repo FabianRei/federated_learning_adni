@@ -68,7 +68,7 @@ class ResNet50Reg(nn.Module):
             input_weights = self.ResNet.conv1.weight.data
             # we divide by three, as this would yield the same activations, given the input slice was simply being
             # copied
-            input_weights = input_weights.repeat(1,3,1,1)/(num_input//3)
+            input_weights = input_weights.repeat(1,(num_input//3),1,1)/(num_input//3)
             new_input = nn.Conv2d(num_input, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
             new_input.weight.data = input_weights
             self.ResNet.conv1 = new_input
