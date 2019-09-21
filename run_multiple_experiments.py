@@ -49,7 +49,7 @@ def run_jobs(jobs):
 
 if __name__ == '__main__':
     full_start = time.time()
-    super_folder = '/scratch/reith/fl/experiments/seeds_10-90'
+    super_folder = '/scratch/reith/fl/experiments/seeds_10-90_lower_lr'
     sub_folders = glob(os.path.join(super_folder, '*seed*'))
     # sub_folders = ['/scratch/reith/fl/experiments/transfer_experiment/seed_10']
     # sub_folders = ['/scratch/reith/fl/experiments/transfer_experiment/seed_higher_bs_freeze_5_epochs_10']
@@ -69,6 +69,11 @@ if __name__ == '__main__':
     print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
 
 
+
+r'''
+###############################################
+######Past runs################################
+###############################################
 if __name__ == '__main__':
     full_start = time.time()
     super_folder = '/scratch/reith/fl/experiments/seeds_lower_lr'
@@ -91,11 +96,6 @@ if __name__ == '__main__':
             print(process_jobs)
             run_jobs(process_jobs)
     print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
-
-
-r'''
-###############################################
-######Past runs################################
 ###############################################
 if __name__ == '__main__':
     full_start = time.time()
