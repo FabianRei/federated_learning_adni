@@ -59,7 +59,7 @@ class ResNet50Reg(nn.Module):
         self.num_input = num_input
         if num_input > 3 and not pretrained:
             # experiment with higher input channels
-            new_input = nn.Conv2d(9, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+            new_input = nn.Conv2d(num_input, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
             # standard resnet initialization for conv2d
             n = new_input.kernel_size[0] * new_input.kernel_size[1] * new_input.out_channels
             new_input.weight.data.normal_(0, math.sqrt(2. / n))
@@ -68,12 +68,12 @@ class ResNet50Reg(nn.Module):
             input_weights = self.ResNet.conv1.weight.data
             # we divide by three, as this would yield the same activations, given the input slice was simply being
             # copied
-            input_weights = input_weights.repeat(1,3,1,1)/3
-            new_input = nn.Conv2d(9, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+            input_weights = input_weights.repeat(1,3,1,1)/(num_input//3)
+            new_input = nn.Conv2d(num_input, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
             new_input.weight.data = input_weights
             self.ResNet.conv1 = new_input
-            self.channel_mean = self.channel_mean.repeat(1,3,1,1)
-            self.channel_std = self.channel_std.repeat(1,3,1,1)
+            self.channel_mean = self.channel_mean.repeat(1,(num_input//3),1,1)
+            self.channel_std = self.channel_std.repeat(1,(num_input//3),1,1)
         # pytorch's standard implementation throws errors at some image sizes..
         self.ResNet.avgpool = nn.AdaptiveAvgPool2d(1)
         self.ResNet.fc = nn.Linear(in_features=2048, out_features=num_classes, bias=True)
