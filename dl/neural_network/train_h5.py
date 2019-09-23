@@ -243,6 +243,12 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
 
 
 if __name__ == '__main__':
+    # this is done to run things from console
+    import inspect
+    current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    parent_dir = os.path.dirname(current_dir)
+    parent_dir = os.path.dirname(parent_dir)
+    sys.path.insert(0, parent_dir)
     windows_db = False
     if not windows_db:
         seed = 10
