@@ -243,7 +243,14 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
 
 
 if __name__ == '__main__':
-    train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\incl_subjects_site_one_slices_dataset\slice_data_subj.h5', pretrained=False, extra_info='', lr=0.001, regression=True, label_names=['label_suvr', 'label_amyloid'], seed=1)
+    windows_db = False
+    if not windows_db:
+        seed = 10
+        job = {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnext': True, 'batch_size': 1}
+        fpath = '/scratch/reith/fl/experiments/seeds_10-90_resnext/seed_10/slices_27/slice_data_subj.h5'
+        train_h5(fpath, **job)
+    else:
+        train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\incl_subjects_site_one_slices_dataset\slice_data_subj.h5', pretrained=False, extra_info='', lr=0.001, regression=True, label_names=['label_suvr', 'label_amyloid'], seed=1)
     # label_names=['label_suvr', 'label_amyloid'],
 
 
