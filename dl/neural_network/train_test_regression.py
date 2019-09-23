@@ -57,6 +57,7 @@ def test_reg(batchSize, testData, test_labels, Net, dimIn, includePredictionLabe
 def train_reg(batch_size, train_data, train_labels, test_data, test_labels, Net, optimizer, criterion, test_interval=1,
           epochs=1, dim_in='default'):
     test_acc = 0
+    print('bs is', batch_size)
     Net.train()
     if dim_in == 'default':
         dim_in = train_data.shape[-1]
