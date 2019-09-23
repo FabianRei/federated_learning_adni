@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
 from dl.data.get_dataset import get_dataset
 from dl.neural_network.resnet import ResNet50, ResNet50Reg
-from dl.neural_network.resnext import ResNext101, ResNext101Reg
+# from dl.neural_network.resnext import ResNext101, ResNext101Reg
 from dl.neural_network.train_test import train
 from dl.neural_network.train_test_regression import train_reg
 from dl.data.bin_equal import bin_equal
