@@ -1,3 +1,13 @@
+if __name__ == '__main__':
+    import inspect
+    import sys
+    import os
+    current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    parent_dir = os.path.dirname(current_dir)
+    parent_dir = os.path.dirname(parent_dir)
+    print(parent_dir)
+    sys.path.insert(0, parent_dir)
+
 from dl.data.get_dataset import get_dataset
 from dl.neural_network.resnet import ResNet50, ResNet50Reg
 from dl.neural_network.resnext import ResNext101, ResNext101Reg
@@ -244,12 +254,6 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
 
 if __name__ == '__main__':
     # this is done to run things from console
-    import inspect
-    current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-    parent_dir = os.path.dirname(current_dir)
-    parent_dir = os.path.dirname(parent_dir)
-    print(parent_dir)
-    sys.path.insert(0, parent_dir)
     windows_db = False
     if not windows_db:
         seed = 10
