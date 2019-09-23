@@ -1,5 +1,6 @@
 from dl.data.get_dataset import get_dataset
 from dl.neural_network.resnet import ResNet50, ResNet50Reg
+from dl.neural_network.resnext import ResNext101, ResNext101Reg
 from dl.neural_network.train_test import train
 from dl.neural_network.train_test_regression import train_reg
 from dl.data.bin_equal import bin_equal
@@ -20,7 +21,8 @@ torch.backends.cudnn.benchmark = False
 
 def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, decrease_after=10,
              rate_of_decrease=0.1, gpu_device=-1, save_pred_labels=True, test_split=0.2, pretrained=True,
-             batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1, freeze_epochs=-1):
+             batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1, freeze_epochs=-1,
+             use_resnext=False):
     windows_db = False
     if windows_db:
         h5_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\slice_data_subj.h5'
@@ -169,13 +171,19 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
     if regression:
         test_labels = torch.from_numpy(test_labels).type(torch.float32)
         train_labels = torch.from_numpy(train_labels).type(torch.float32)
-        Net = ResNet50Reg(pretrained=pretrained, num_classes=1, num_input=num_chan_input)
+        if use_resnext:
+            Net = ResNext101Reg(pretrained=pretrained, num_classes=1, num_input=num_chan_input)
+        else:
+            Net = ResNet50Reg(pretrained=pretrained, num_classes=1, num_input=num_chan_input)
         criterion = nn.MSELoss()
         train_func = train_reg
     else:
         test_labels = torch.from_numpy(test_labels).type(torch.long)
         train_labels = torch.from_numpy(train_labels).type(torch.long)
-        Net = ResNet50(pretrained=pretrained, num_classes=num_classes, num_input=num_chan_input)
+        if use_resnext:
+            Net = ResNext101(pretrained=pretrained, num_classes=num_classes, num_input=num_chan_input)
+        else:
+            Net = ResNet50(pretrained=pretrained, num_classes=num_classes, num_input=num_chan_input)
         criterion = nn.NLLLoss()
         train_func = train
 
