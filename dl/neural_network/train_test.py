@@ -1,5 +1,6 @@
 from torch.autograd import Variable
 import numpy as np
+import fnmatch
 
 
 def batch_gen(data, labels, batchSize, shuffle=True):
@@ -63,6 +64,12 @@ def test(batchSize, testData, test_labels, Net, dimIn, includePredictionLabels=F
 def train(batch_size, train_data, train_labels, test_data, test_labels, Net, optimizer, criterion, test_interval=1,
           epochs=1, dim_in='default'):
     test_acc = 0
+    is_resnext = fnmatch.fnmatch(type(Net).__name__, '*ResNext*')
+    if is_resnext:
+        # max possible batch size is 4. We aggregate and pass back for set batch_size.
+        batch_size = 4
+    aggregation_number = int(batch_size // 4)
+    aggregation_count = 0
     Net.train()
     if dim_in == 'default':
         dim_in = train_data.shape[-1]
@@ -85,7 +92,14 @@ def train(batch_size, train_data, train_labels, test_data, test_labels, Net, opt
             prediction = net_out.max(1)[1]
             loss = criterion(net_out, target)
             loss.backward()
-            optimizer.step()
+            if is_resnext:
+                if aggregation_count >= batch_size*aggregation_number:
+                    optimizer.step()
+                    aggregation_count = 0
+                else:
+                    aggregation_count += batch_size
+            else:
+                optimizer.step()
             batch_acc = (prediction == target).cpu().numpy()
             train_predictions.extend(prediction)
             train_target.extend(target)

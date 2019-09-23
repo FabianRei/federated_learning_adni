@@ -34,7 +34,7 @@ class ResNext101(nn.Module):
             # self.load_model_dict(weight_path)
         else:
             self.ResNext = make_resnext()
-        print('nice')
+        # print('nice')
         # models.resnet50(pretrained=pretrained)
             # models.resnet50(pretrained=pretrained)
         self.num_input = num_input
@@ -116,7 +116,7 @@ class ResNext101Reg(nn.Module):
             # self.load_model_dict(weight_path)
         else:
             self.ResNext = make_resnext()
-        print('nice')
+        # print('nice')
         # models.resnet50(pretrained=pretrained)
         # we assume multiples of 3
         self.num_input = num_input
@@ -180,4 +180,5 @@ class ResNext101Reg(nn.Module):
 
 
 if __name__ == '__main__':
-    net = ResNext101(pretrained=True)
+    net = ResNext101(pretrained=False)
+    print('nice')
