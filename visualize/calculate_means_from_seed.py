@@ -121,6 +121,10 @@ def get_mean_std(csv_files, cols=['train_acc', 'test_acc'], sort_by='epoch'):
     raw_dict = {}
     for col in cols:
         mean_res, std_res, raw_res = get_spec_mean_std(csv_files, col)
+        if fnmatch(csv_files[0], '*pretrained_reg*'):
+            if col == 'test_acc' or col == 'train_acc':
+                result_dict['mean_rmse' + col] = np.mean(np.sqrt(raw_res), axis=0)
+                result_dict['std_rmse' + col] = np.std(np.sqrt(raw_res), axis=0)
         result_dict['mean_' + col] = mean_res
         result_dict['std_' + col] = std_res
         raw_dict[col] = raw_res
@@ -205,7 +209,8 @@ def write_raw2csv(dict, id, out_path):
 if __name__ == '__main__':
     super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_10-90'
     super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_lower_lr'
-    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_10-90_lower_lr'
+    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_lower_lr_imgnet_fixed'
+    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds'
     fpaths = glob(os.path.join(super_path, '*seed*'))
     dist_10 = glob(rf'{super_path}\*seed*\dist_10\*.csv')
     one_slice = glob(rf'{super_path}\*seed*\one_slice\*.csv')
