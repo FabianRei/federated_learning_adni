@@ -175,7 +175,7 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
     else:
         test_labels = torch.from_numpy(test_labels).type(torch.long)
         train_labels = torch.from_numpy(train_labels).type(torch.long)
-        Net = ResNet50(pretrained=pretrained, num_classes=num_classes)
+        Net = ResNet50(pretrained=pretrained, num_classes=num_classes, num_input=num_chan_input)
         criterion = nn.NLLLoss()
         train_func = train
 
