@@ -87,7 +87,7 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
     # pretrained data needs input to be in the range [0,1]
     if pretrained:
         import pdb; pdb.set_trace()
-        data += data.min()
+        data -= data.min()
         data /= data.max()
         print(f'skewed data into min: {data.min()} and max: {data.max()}')
     # import time; time.sleep(20)
