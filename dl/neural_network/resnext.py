@@ -11,7 +11,8 @@ from torchvision.models.resnet import ResNet, Bottleneck
 
 
 def make_resnext(pretrained=False):
-    ResNext101 = ResNet(Bottleneck, [3, 4, 23, 3], groups=32, width_per_group=48)
+    # ResNext101 = ResNet(Bottleneck, [3, 4, 23, 3], groups=32, width_per_group=48)
+    ResNext101 = ResNet(Bottleneck, [3, 4, 23, 3], groups=32, width_per_group=32)
     return ResNext101
 
 class ResNext101(nn.Module):
@@ -21,16 +22,20 @@ class ResNext101(nn.Module):
         self.channel_std = torch.Tensor([0.229, 0.224, 0.225]).cuda().reshape(1, -1, 1, 1)
         self.pretrained = pretrained
         # use weights from: https://arxiv.org/pdf/1906.06423.pdf
-        model_path = '/scratch/reith/fl/experiments/models/'
-        weight_path = os.path.join(model_path, 'ResNext101_32x48d_v2.pth')
+        # model_path = '/scratch/reith/fl/experiments/models/'
+        # weight_path = os.path.join(model_path, 'ResNext101_32x48d_v2.pth')
         if pretrained:
-            self.ResNext = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x48d_wsl', force_reload=True)
-            if not os.path.exists(weight_path):
-                wget.download('https://dl.fbaipublicfiles.com/FixRes_data/FixRes_Pretrained_Models/ResNext101_32x48d_v2.pth', out=model_path)
-            self.load_model_dict(weight_path)
+            # self.ResNext = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x48d_wsl', force_reload=True)
+            self.ResNext = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x32d_wsl', force_reload=True)
+            # if not os.path.exists(weight_path):
+            #     wget.download(
+            #         'https://dl.fbaipublicfiles.com/FixRes_data/FixRes_Pretrained_Models/ResNext101_32x48d_v2.pth',
+            #         out=model_path)
+            # self.load_model_dict(weight_path)
         else:
             self.ResNext = make_resnext()
         print('nice')
+        # models.resnet50(pretrained=pretrained)
             # models.resnet50(pretrained=pretrained)
         self.num_input = num_input
         if num_input > 3 and not pretrained:
@@ -99,15 +104,16 @@ class ResNext101Reg(nn.Module):
         self.channel_std = torch.Tensor([0.229, 0.224, 0.225]).cuda().reshape(1, -1, 1, 1)
         self.pretrained = pretrained
         # use weights from: https://arxiv.org/pdf/1906.06423.pdf
-        model_path = '/scratch/reith/fl/experiments/models/'
-        weight_path = os.path.join(model_path, 'ResNext101_32x48d_v2.pth')
+        # model_path = '/scratch/reith/fl/experiments/models/'
+        # weight_path = os.path.join(model_path, 'ResNext101_32x48d_v2.pth')
         if pretrained:
-            self.ResNext = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x48d_wsl', force_reload=True)
-            if not os.path.exists(weight_path):
-                wget.download(
-                    'https://dl.fbaipublicfiles.com/FixRes_data/FixRes_Pretrained_Models/ResNext101_32x48d_v2.pth',
-                    out=model_path)
-            self.load_model_dict(weight_path)
+            # self.ResNext = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x48d_wsl', force_reload=True)
+            self.ResNext = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x32d_wsl', force_reload=True)
+            # if not os.path.exists(weight_path):
+            #     wget.download(
+            #         'https://dl.fbaipublicfiles.com/FixRes_data/FixRes_Pretrained_Models/ResNext101_32x48d_v2.pth',
+            #         out=model_path)
+            # self.load_model_dict(weight_path)
         else:
             self.ResNext = make_resnext()
         print('nice')
