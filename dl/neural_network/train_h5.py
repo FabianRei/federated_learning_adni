@@ -173,6 +173,7 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
         train_labels = torch.from_numpy(train_labels).type(torch.float32)
         if use_resnext:
             Net = ResNext101Reg(pretrained=pretrained, num_classes=1, num_input=num_chan_input)
+            import pdb; pdb.set_trace()
         else:
             Net = ResNet50Reg(pretrained=pretrained, num_classes=1, num_input=num_chan_input)
         criterion = nn.MSELoss()
