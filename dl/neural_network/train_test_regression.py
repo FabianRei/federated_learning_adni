@@ -81,7 +81,7 @@ def train_reg(batch_size, train_data, train_labels, test_data, test_labels, Net,
             net_out = net_out[:, 0]
             loss = criterion(net_out, target)
             loss.backward()
-            import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
             optimizer.step()
             batch_acc = ((prediction.detach()-target)**2).cpu().numpy()
             train_predictions.extend(prediction)
