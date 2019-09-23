@@ -22,7 +22,7 @@ torch.backends.cudnn.benchmark = False
 def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, decrease_after=10,
              rate_of_decrease=0.1, gpu_device=-1, save_pred_labels=True, test_split=0.2, pretrained=True,
              batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1, freeze_epochs=-1,
-             use_resnext=False):
+             use_resnext=False, save_model=True):
     windows_db = False
     if windows_db:
         h5_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\slice_data_subj.h5'
@@ -236,8 +236,9 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
             with open(pickle_fn, 'wb') as f:
                 pickle.dump(pickle_object, f)
         print(f"Test accuracy is {test_acc * 100:.2f} percent")
-    model_out_path = os.path.join(out_path, f'resnet_model_{time_stamp}{extra_info}{standard_info}.pth')
-    torch.save(Net, model_out_path)
+    if save_model:
+        model_out_path = os.path.join(out_path, f'resnet_model_{time_stamp}{extra_info}{standard_info}.pth')
+        torch.save(Net, model_out_path)
 
 
 if __name__ == '__main__':
