@@ -86,7 +86,7 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
     data /= data.std()
     # pretrained data needs input to be in the range [0,1]
     if pretrained:
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         data -= data.min()
         data /= data.max()
         print(f'skewed data into min: {data.min()} and max: {data.max()}')
@@ -184,7 +184,7 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
         train_labels = torch.from_numpy(train_labels).type(torch.float32)
         if use_resnext:
             Net = ResNext101Reg(pretrained=pretrained, num_classes=1, num_input=num_chan_input)
-            import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
         else:
             Net = ResNet50Reg(pretrained=pretrained, num_classes=1, num_input=num_chan_input)
         criterion = nn.MSELoss()
@@ -258,7 +258,7 @@ if __name__ == '__main__':
     windows_db = False
     if not windows_db:
         seed = 10
-        job = {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnext': True, 'batch_size': 1}
+        job = {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnext': True, 'batch_size': 4}
         fpath = '/scratch/reith/fl/experiments/seeds_10-90_resnext/seed_10/slices_27/slice_data_subj.h5'
         train_h5(fpath, **job)
     else:
