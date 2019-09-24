@@ -208,8 +208,8 @@ def write_raw2csv(dict, id, out_path):
 
 if __name__ == '__main__':
     super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_10-90'
-    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_lower_lr'
-    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_10-90_lower_lr_imgnet_fixed'
+    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_lower_lr_imgnet_fixed'
+    # super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_10-90_lower_lr_imgnet_fixed'
     # super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds'
     fpaths = glob(os.path.join(super_path, '*seed*'))
     dist_10 = glob(rf'{super_path}\*seed*\dist_10\*.csv')
