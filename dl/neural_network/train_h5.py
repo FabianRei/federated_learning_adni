@@ -33,9 +33,9 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
              rate_of_decrease=0.1, gpu_device=-1, save_pred_labels=True, test_split=0.2, pretrained=True,
              batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1, freeze_epochs=-1,
              use_resnext=False, save_model=True):
-    windows_db = False
+    windows_db = True
     if windows_db:
-        h5_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\slice_data_subj.h5'
+        h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\dist_20_incl_subjects_site_three_slices_dataset\slice_data_subj.h5'
 
     # chose random when -1, otherwise the selected id
     if gpu_device < 0:
@@ -80,12 +80,17 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
         with open(os.path.join(out_path, f"original_labels_and_break_offs_{time_stamp}{extra_info}{standard_info}.p"), 'wb') as f:
             pickle.dump({'original_labels': labels_backup, 'break_offs': break_offs}, f)
     # normalize data
+    if len(data.shape) == 4:
+        # channel wise
+        data -= data.mean(axis=(0, 1, 2))
+        data -= data.std(axis=(0, 1, 2))
     print(f'data mean is {data.mean()}')
     data -= data.mean()
     print(f'data std is {data.std()}')
     data /= data.std()
     # pretrained data needs input to be in the range [0,1]
-    if pretrained:
+    # we test, whether this is best for transfer learning as well..
+    if pretrained and False:
         # import pdb; pdb.set_trace()
         data -= data.min()
         data /= data.max()

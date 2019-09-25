@@ -9,7 +9,7 @@ def get_fname(path_name):
     return os.path.splitext(os.path.basename(path_name))[0]
 
 
-windows_db = False
+windows_db = True
 
 if windows_db:
     fpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\trial_sample'

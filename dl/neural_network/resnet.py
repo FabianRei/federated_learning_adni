@@ -48,7 +48,7 @@ class ResNet50(nn.Module):
         if x.shape[1] == 1:
             x = x.repeat(1, 3, 1, 1)
         # substract imagenet mean and scale imagenet std
-        if self.pretrained:
+        if self.pretrained and False:
             x -= self.channel_mean
             x /= self.channel_std
         x = self.ResNet(x)
@@ -109,7 +109,7 @@ class ResNet50Reg(nn.Module):
         if x.shape[1] == 1:
             x = x.repeat(1, 3, 1, 1)
         # substract imagenet mean and scale imagenet std
-        if self.pretrained:
+        if self.pretrained and False:
             x -= self.channel_mean
             x /= self.channel_std
         x = self.ResNet(x)
