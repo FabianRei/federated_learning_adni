@@ -89,8 +89,8 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
     print(f'data std is {data.std()}')
     data /= data.std()
     # pretrained data needs input to be in the range [0,1]
-    # we test, whether this is best for transfer learning as well..
-    if pretrained and False:
+    # we test, whether this is best for transfer learning as well.. -> yes, standard way is best
+    if pretrained:
         # import pdb; pdb.set_trace()
         data -= data.min()
         data /= data.max()

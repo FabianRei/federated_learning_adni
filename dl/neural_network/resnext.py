@@ -26,7 +26,7 @@ class ResNext101(nn.Module):
         # weight_path = os.path.join(model_path, 'ResNext101_32x48d_v2.pth')
         if pretrained:
             # self.ResNext = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x48d_wsl', force_reload=True)
-            self.ResNext = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x32d_wsl', force_reload=True)
+            self.ResNext = torch.hub.load('facebookresearch/WSL-Images', 'resnext101_32x16d_wsl', force_reload=True)
             # if not os.path.exists(weight_path):
             #     wget.download(
             #         'https://dl.fbaipublicfiles.com/FixRes_data/FixRes_Pretrained_Models/ResNext101_32x48d_v2.pth',

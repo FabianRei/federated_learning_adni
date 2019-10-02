@@ -67,8 +67,8 @@ def train(batch_size, train_data, train_labels, test_data, test_labels, Net, opt
     is_resnext = fnmatch.fnmatch(type(Net).__name__, '*ResNext*')
     if is_resnext:
         # max possible batch size is 4. We aggregate and pass back for set batch_size.
-        batch_size = 4
-    aggregation_number = int(batch_size // 4)
+        batch_size = 8
+    aggregation_number = int(batch_size // 8)
     aggregation_count = 0
     Net.train()
     if dim_in == 'default':
