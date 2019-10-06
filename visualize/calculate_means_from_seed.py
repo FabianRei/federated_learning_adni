@@ -209,6 +209,7 @@ def write_raw2csv(dict, id, out_path):
 if __name__ == '__main__':
     super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_10-90'
     super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_lower_lr_transfer'
+    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_resnext'
     # super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_10-90_lower_lr_transfer'
     # super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds'
     fpaths = glob(os.path.join(super_path, '*seed*'))
