@@ -59,11 +59,14 @@ def train_reg(batch_size, train_data, train_labels, test_data, test_labels, Net,
           epochs=1, dim_in='default'):
     test_acc = 0
     is_resnext = fnmatch.fnmatch(type(Net).__name__, '*ResNext*')
+    is_resnet152 = fnmatch.fnmatch(type(Net).__name__, '*ResNet152*')
+    aggregation_number = int(batch_size // 8)
+    aggregation_count = 0
     if is_resnext:
         # max possible batch size is 4. We aggregate and pass back for set batch_size.
         batch_size = 8
-    aggregation_number = int(batch_size // 8)
-    aggregation_count = 0
+    if is_resnet152:
+        batch_size = 16
     print('bs is', batch_size)
     Net.train()
     if dim_in == 'default':
@@ -90,7 +93,7 @@ def train_reg(batch_size, train_data, train_labels, test_data, test_labels, Net,
             loss.backward()
             # import pdb; pdb.set_trace()
             # only step after #batch_size forward passes
-            if is_resnext:
+            if is_resnext or is_resnet152:
                 if aggregation_count >= batch_size*aggregation_number:
                     optimizer.step()
                     aggregation_count = 0
