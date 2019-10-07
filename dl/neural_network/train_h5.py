@@ -265,7 +265,7 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
 
 if __name__ == '__main__':
     # this is done to run things from console
-    windows_db = True
+    windows_db = False
     if not windows_db:
         seed = 10
         job = {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnext': True, 'batch_size': 4}
