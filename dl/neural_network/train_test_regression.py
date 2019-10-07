@@ -60,6 +60,8 @@ def train_reg(batch_size, train_data, train_labels, test_data, test_labels, Net,
     test_acc = 0
     is_resnext = fnmatch.fnmatch(type(Net).__name__, '*ResNext*')
     is_resnet152 = fnmatch.fnmatch(type(Net).__name__, '*ResNet152*')
+    # aggregation of gradients not needed for our purpose
+    is_resnet152 = False
     aggregation_number = int(batch_size // 8)
     aggregation_count = 0
     if is_resnext:
