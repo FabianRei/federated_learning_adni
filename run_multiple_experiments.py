@@ -59,10 +59,10 @@ if __name__ == '__main__':
     for sub in sub_folders:
         seed = int(sub.split('_')[-1])
         jobs = [
-            # {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 1},
-            # {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 1},
-            {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 1},
-            {'extra_info': '', 'pretrained': False, 'label_names': ['label_amyloid'], 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 1}]
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32},
+            {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32},
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32},
+            {'extra_info': '', 'pretrained': False, 'label_names': ['label_amyloid'], 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32}]
         h5_files = glob(f'{sub}/*_*/*.h5')
         # import pdb; pdb.set_trace()
         print(h5_files)
