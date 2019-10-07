@@ -88,7 +88,7 @@ def train(batch_size, train_data, train_labels, test_data, test_labels, Net, opt
         for batch_idx, (data, target) in enumerate(batch_gen(train_data, train_labels, batch_size, shuffle=True)):
             data, target = Variable(data), Variable(target)
             data, target = data.cuda(), target.cuda()
-            import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
             # data = data.view(-1, dimIn)
             if len(data.shape) == 3:
                 data = data.view(-1, 1, dim_in, dim_in)
