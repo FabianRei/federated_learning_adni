@@ -269,6 +269,7 @@ if __name__ == '__main__':
     if not windows_db:
         seed = 10
         job = {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnext': True, 'batch_size': 4}
+        job = {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 1}
         fpath = '/scratch/reith/fl/experiments/seeds_10-90_resnext/seed_10/slices_27/slice_data_subj.h5'
         train_h5(fpath, **job)
     else:

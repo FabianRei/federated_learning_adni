@@ -94,6 +94,7 @@ def train(batch_size, train_data, train_labels, test_data, test_labels, Net, opt
             net_out = Net(data)
             prediction = net_out.max(1)[1]
             loss = criterion(net_out, target)
+            import pdb; pdb.set_trace()
             loss.backward()
             if is_resnext or is_resnet152:
                 if aggregation_count >= batch_size*aggregation_number:
