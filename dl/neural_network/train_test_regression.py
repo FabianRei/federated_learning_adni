@@ -78,13 +78,13 @@ def train_reg(batch_size, train_data, train_labels, test_data, test_labels, Net,
         test_acc = -1
         train_predictions = []
         train_target = []
+        optimizer.zero_grad()
         for batch_idx, (data, target) in enumerate(batch_gen(train_data, train_labels, batch_size, shuffle=True)):
             data, target = Variable(data), Variable(target)
             data, target = data.cuda(), target.cuda()
             # data = data.view(-1, dimIn)
             if len(data.shape) == 3:
                 data = data.view(-1, 1, dim_in, dim_in)
-            optimizer.zero_grad()
             # Net.train()
             net_out = Net(data)
             prediction = net_out[:, 0]
@@ -96,11 +96,13 @@ def train_reg(batch_size, train_data, train_labels, test_data, test_labels, Net,
             if is_resnext or is_resnet152:
                 if aggregation_count >= batch_size*aggregation_number:
                     optimizer.step()
+                    optimizer.zero_grad()
                     aggregation_count = 0
                 else:
                     aggregation_count += batch_size
             else:
                 optimizer.step()
+                optimizer.zero_grad()
             batch_acc = ((prediction.detach()-target)**2).cpu().numpy()
             train_predictions.extend(prediction)
             train_target.extend(target)
