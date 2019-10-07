@@ -86,6 +86,7 @@ def train(batch_size, train_data, train_labels, test_data, test_labels, Net, opt
         for batch_idx, (data, target) in enumerate(batch_gen(train_data, train_labels, batch_size, shuffle=True)):
             data, target = Variable(data), Variable(target)
             data, target = data.cuda(), target.cuda()
+            import pdb; pdb.set_trace()
             # data = data.view(-1, dimIn)
             if len(data.shape) == 3:
                 data = data.view(-1, 1, dim_in, dim_in)
@@ -94,7 +95,6 @@ def train(batch_size, train_data, train_labels, test_data, test_labels, Net, opt
             net_out = Net(data)
             prediction = net_out.max(1)[1]
             loss = criterion(net_out, target)
-            import pdb; pdb.set_trace()
             loss.backward()
             if is_resnext or is_resnet152:
                 if aggregation_count >= batch_size*aggregation_number:
