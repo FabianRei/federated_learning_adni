@@ -128,5 +128,5 @@ class ResNet152Reg(nn.Module):
 
 
 if __name__ == '__main__':
-    net = ResNet50Reg(pretrained=True, num_input=9)
+    net = ResNet152Reg(pretrained=True, num_input=9)
     print('db')
