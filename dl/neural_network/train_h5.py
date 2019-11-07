@@ -33,7 +33,7 @@ torch.backends.cudnn.benchmark = False
 def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, decrease_after=10,
              rate_of_decrease=0.1, gpu_device=-1, save_pred_labels=True, test_split=0.2, pretrained=True,
              batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1, freeze_epochs=-1,
-             use_resnext=False, use_resnet152=False, save_model=True):
+             use_resnext=False, use_resnet152=False, save_model=True, train_by_id = ''):
     windows_db = False
     if windows_db:
         h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\dist_20_incl_subjects_site_three_slices_dataset\slice_data_subj.h5'

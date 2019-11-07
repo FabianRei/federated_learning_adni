@@ -91,6 +91,16 @@ def calc_specificity(tt):
     return specificity
 
 
+def calc_ppv(tt):
+    pred = tt[:, 0]
+    lab = tt[:, 1]
+    return np.sum((pred == 1) & (lab == 1))/np.sum(pred==1)
+
+def calc_npv(tt):
+    pred = tt[:, 0]
+    lab = tt[:, 1]
+    return np.sum((pred == 0) & (lab == 0))/np.sum(pred==0)
+
 def cutoff_youdens_j_tt(tt):
     pred = tt[:,3]
     lab = tt[:,1]
@@ -99,11 +109,18 @@ def cutoff_youdens_j_tt(tt):
     j_ordered = sorted(zip(j_scores,thres))
     j_score = j_ordered[-1][0]
     threshold = j_ordered[-1][1]
-    tt[:,0] = pred >= threshold
+    #use standard thresholds
+    if tt[:,0].max() > 1.1:
+        tt[:, 0] = pred > 1.11
+    else:
+        tt[:, 0] = pred >= 0.5
+    #tt[:,0] = pred >= threshold
     sensitivity = calc_sensitivity(tt)
     specificity = calc_specificity(tt)
     roc_auc = calc_roc_auc(tt)
-    return j_score, threshold, sensitivity, specificity, roc_auc
+    ppv = calc_ppv(tt)
+    npv = calc_npv(tt)
+    return j_score, threshold, sensitivity, specificity, roc_auc, ppv, npv
 
 
 def cutoff_youdens_j(fp, bins=-1):

@@ -80,6 +80,7 @@ def calculate_values(oo_data, nn_data, svm_data, out_path, adjust_imbalance=True
 # create result csv files based on pickle prediction-labels
 fp1 = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds\seed_11\one_slice\epoch_8_pred_labels_train_test_epoch_09-17_17-57_lr_0_001_pretrained_reg_30epochs_rod_0_1_da_10.p'
 fp2 = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds\seed_11\one_slice\epoch_9_pred_labels_train_test_epoch_09-17_17-57_lr_0_001_pretrained_reg_30epochs_rod_0_1_da_10.p'
+fp1 = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_lower_lr_imgnet_fixed\seed_11\one_slice\epoch_29_pred_labels_train_test_epoch_09-23_17-50_lr_0_0001_pretrained_reg_30epochs_rod_0_1_da_10.p'
 with open(fp1, 'rb') as f:
     res1 = pickle.load(f)
 with open(fp2, 'rb') as f:

@@ -42,6 +42,7 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
             res = xml.find('.//dateAcquired').text
             res = pd.to_datetime(res)
             result['examdate'] = res
+            result['examdate_posix'] = res.timestamp()
         if w == 'manufacturer':
             protocols = xml.findall('.//protocol')
             res = '-1'
@@ -93,6 +94,46 @@ def get_meta_xml(nii_name, adni_meta, ids, what=('rid', 'examdate')):
                 if prot.attrib['term'] == 'Frames':
                     res = float(prot.text)
             result['frames'] = res
+        if w == 'age':
+            res = xml.find('.//subjectAge').text
+            result['age'] = res
+        if w == 'weight':
+            res = xml.find('.//weightKg').text
+            result['weight'] = res
+        if w == 'dead':
+            res = xml.find('.//postMortem').text
+            result['dead'] = res
+        if w == 'sex':
+            res = xml.find('.//subjectSex').text
+            result['sex'] = res
+        if w == 'faqtotal':
+            protocols = xml.findall('.//assessmentScore')
+            res = '-1'
+            for prot in protocols:
+                if prot.attrib['attribute'] == 'FAQTOTAL':
+                    res = float(prot.text)
+            result['faqtotal'] = res
+        if w == 'apoea1':
+            protocols = xml.findall('.//subjectInfo')
+            res = '-1'
+            for prot in protocols:
+                if prot.attrib['item'] == 'APOE A1':
+                    res = float(prot.text)
+            result['apoea1'] = res
+        if w == 'apoea2':
+            protocols = xml.findall('.//subjectInfo')
+            res = '-1'
+            for prot in protocols:
+                if prot.attrib['item'] == 'APOE A2':
+                    res = float(prot.text)
+            result['apoea2'] = res
+        if w == 'mmsescore':
+            protocols = xml.findall('.//assessmentScore')
+            res = '-1'
+            for prot in protocols:
+                if prot.attrib['attribute'] == 'MMSCORE':
+                    res = float(prot.text)
+            result['mmsescore'] = res
     return result
 
 
@@ -146,7 +187,8 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
         name = ntpath.basename(nii)[:-4]
         meta_data = get_meta_xml(nii, adni_meta=adni_meta, ids=ids, what=['rid', 'examdate', 'is_av45', 'manufacturer',
                                                                           'model', 'img_id', 'rows', 'columns', 'slices',
-                                                                          'frames', 'site'])
+                                                                          'frames', 'site', 'age', 'weight', 'dead', 'sex',
+                                                                          'faqtotal', 'apoea1', 'apoea2', 'mmsescore'])
         if not meta_data['is_av45']:
             print("this ain't the right pet modality!")
         label = get_amyloid_label(meta_data['rid'], meta_data['examdate'], berkeley_data, name=name)
@@ -181,15 +223,16 @@ ids = np.array(ids)
 # nii_data = glob(nii_folder + r'\**\*.nii', recursive=True)
 nii_data = glob(nii_folder + r'/**/*.nii', recursive=True)
 
-test1 = get_meta_xml(nii_data[0], adni_meta=adni_meta, ids=ids)
-print(test1)
-test2 = get_meta_xml(nii_data[0], adni_meta=adni_meta, ids=ids, what=['manufacturer', 'model'])
-print(test2)
-label = get_amyloid_label(rid=test1['rid'], examdate=test1['examdate'], berkeley_data=berkeley_data)
-print('nice')
-labels, labels_detailled = get_labels_from_nifti(nii_data, berkeley_data, adni_meta)
-with open(os.path.join(output_folder, 'labels_plain_suvr.pickle'), 'wb') as f:
-    pickle.dump(labels, f)
-with open(os.path.join(output_folder, 'labels_detailled_suvr.pickle'), 'wb') as f:
+# test1 = get_meta_xml(nii_data[0], adni_meta=adni_meta, ids=ids)
+# print(test1)
+# test2 = get_meta_xml(nii_data[0], adni_meta=adni_meta, ids=ids, what=['manufacturer', 'model'])
+# print(test2)
+# label = get_amyloid_label(rid=test1['rid'], examdate=test1['examdate'], berkeley_data=berkeley_data)
+# print('nice')
+# labels, labels_detailled = get_labels_from_nifti(nii_data, berkeley_data, adni_meta)
+labels, labels_detailled = get_labels_from_nifti(adni_meta, berkeley_data, adni_meta)
+# with open(os.path.join(output_folder, 'labels_plain_suvr.pickle'), 'wb') as f:
+#     pickle.dump(labels, f)
+with open(os.path.join(output_folder, 'xml_labels_detailled_suvr_extended_edition.pickle'), 'wb') as f:
     pickle.dump(labels_detailled, f)
 print('done')

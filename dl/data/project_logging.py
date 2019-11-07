@@ -24,9 +24,10 @@ class Logger(object):
 
 
 class CsvWriter:
-    def __init__(self, file_path, header, default_vals=None, lock=None, delete_if_exists=False):
+    def __init__(self, file_path, header, default_vals=None, lock=None, delete_if_exists=False, delim=';'):
         self.lock = lock
         self.fp = file_path
+        self.delim = delim
         self.header = header
         self.write_header()
         self.default_vals = default_vals
@@ -42,7 +43,7 @@ class CsvWriter:
                 self.lock.release()
             return
         with open(self.fp, 'a') as f:
-            writer = csv.DictWriter(f, delimiter=';', lineterminator='\n', fieldnames=self.header, restval=-1)
+            writer = csv.DictWriter(f, delimiter=self.delim, lineterminator='\n', fieldnames=self.header, restval=-1)
             writer.writeheader()
         if self.lock is not None:
             self.lock.release()
@@ -59,7 +60,7 @@ class CsvWriter:
         if self.lock is not None:
             self.lock.acquire()
         with open(self.fp, 'a') as f:
-            writer = csv.DictWriter(f, delimiter=';', lineterminator='\n', fieldnames=self.header, restval=-1)
+            writer = csv.DictWriter(f, delimiter=self.delim, lineterminator='\n', fieldnames=self.header, restval=-1)
             writer.writerow(row_dict)
         if self.lock is not None:
             self.lock.release()
