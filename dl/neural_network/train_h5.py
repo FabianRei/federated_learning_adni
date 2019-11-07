@@ -25,6 +25,7 @@ import sys
 import os
 import GPUtil
 import pickle
+from dl.neural_network.net_features_extraction import get_net_features
 # set deterministic mode for cudnn
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
@@ -33,10 +34,10 @@ torch.backends.cudnn.benchmark = False
 def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, decrease_after=10,
              rate_of_decrease=0.1, gpu_device=-1, save_pred_labels=True, test_split=0.2, pretrained=True,
              batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1, freeze_epochs=-1,
-             use_resnext=False, use_resnet152=False, save_model=True, train_by_id = ''):
-    windows_db = False
+             use_resnext=False, use_resnet152=False, save_model=True, train_by_id = '', extract_features=False):
+    windows_db = True
     if windows_db:
-        h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\dist_20_incl_subjects_site_three_slices_dataset\slice_data_subj.h5'
+        h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_prediction.h5'
 
     # chose random when -1, otherwise the selected id
     if gpu_device < 0:
@@ -49,13 +50,19 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
     # if there are two labels to be fetched, we assume that the first one is for training and the second one is for
     # testing
     if len(label_names) > 1:
-        if include_subject_ids:
+        if include_subject_ids and not extract_features:
             data, labels, labels2, s_ids = get_dataset(h5_path, label_names=label_names, include_subjects=True)
+        elif include_subject_ids and extract_features:
+            data, labels, labels2, s_ids, train_info, img_ids = get_dataset(h5_path, label_names=label_names, include_subjects=True,
+                                                          include_train_info=True)
         else:
             data, labels, labels2 = get_dataset(h5_path, label_names=label_names)
     else:
-        if include_subject_ids:
+        if include_subject_ids and not extract_features:
             data, labels, s_ids = get_dataset(h5_path, label_names=label_names, include_subjects=True)
+        elif include_subject_ids and extract_features:
+            data, labels, s_ids, train_info, img_ids = get_dataset(h5_path, label_names=label_names, include_subjects=True,
+                                                          include_train_info=True)
         else:
             data, labels = get_dataset(h5_path, label_names=label_names)
         # create dummy labels2. not perfect, I guess, but good enough :)
@@ -74,6 +81,9 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
     labels2 = labels2[shuff_idxs]
     if include_subject_ids:
         s_ids = s_ids[shuff_idxs]
+    if extract_features:
+        train_info = train_info[shuff_idxs]
+        img_ids = img_ids[shuff_idxs]
     standard_info = f"_lr_{str(lr).replace('.', '_')}_{'pretrained' if pretrained else 'non_pretrained'}_{'reg_' if regression else ''}{str(binning)+'bins' if binning>0 else ''}{num_epochs}epochs_rod_{str(rate_of_decrease).replace('.', '_')}_da_{decrease_after}"
     if binning > 0:
         labels_backup = np.copy(labels)
@@ -107,7 +117,7 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
     # We try to not have the same subject in train and test set. To do so, we iteratively assign from subjects with a
     # high number of scans (max is 5) to subjects with a low number of scans (1) to train and test set. If the
     # train-test split is 4 to 1, we assign 4 subjects to train and one to test in each iteration etc. etc.
-    if include_subject_ids:
+    if include_subject_ids and not extract_features:
         ratio = int(np.round((1-test_split)/test_split))
         n, c = np.unique(s_ids, return_counts=True)
         # randomness is preserved within chunks of equal count. As numpy sorts the unique ids for a reason that I
@@ -160,6 +170,15 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
                           'shuffle_permutation': shuff_idxs, 'subj_shuffle_idxs': subj_shuff_idxs}
         with open(subj_out_path, 'wb') as f:
             pickle.dump(subj_meta_data, f)
+    elif extract_features:
+        train_idxs = np.where(train_info)[0]
+        test_idxs = np.where(train_info==False)[0]
+        test_data = data[test_idxs]
+        test_labels = labels[test_idxs]
+        test_labels2 = labels2[test_idxs]
+        train_data = data[train_idxs]
+        train_labels = labels[train_idxs]
+        train_labels2 = labels2[train_idxs]
     else:
         cutoff = int(len(data) * test_split)
         test_data = data[:cutoff]
@@ -258,6 +277,10 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
             with open(pickle_fn, 'wb') as f:
                 pickle.dump(pickle_object, f)
         print(f"Test accuracy is {test_acc * 100:.2f} percent")
+    if extract_features:
+        features_dict = get_net_features(Net, data, labels, img_ids)
+        with open(os.path.join(out_path, 'fc_activations.pickle')) as f:
+            pickle.dump(features_dict, f)
     if save_model:
         model_out_path = os.path.join(out_path, f'resnet_model_{time_stamp}{extra_info}{standard_info}.pth')
         torch.save(Net, model_out_path)
@@ -265,7 +288,7 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
 
 if __name__ == '__main__':
     # this is done to run things from console
-    windows_db = False
+    windows_db = True
     if not windows_db:
         seed = 10
         job = {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use': True, 'batch_size': 4}
@@ -273,7 +296,9 @@ if __name__ == '__main__':
         fpath = '/scratch/reith/fl/experiments/seeds_resnet152/seed_10/dist_10/slice_data_subj.h5'
         train_h5(fpath, **job)
     else:
-        train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\incl_subjects_site_one_slices_dataset\slice_data_subj.h5', pretrained=False, extra_info='', lr=0.001, regression=True, label_names=['label_suvr', 'label_amyloid'], seed=1)
+        train_h5(r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\incl_subjects_site_one_slices_dataset\slice_data_subj.h5',
+                 pretrained=False, extra_info='', lr=0.001, regression=True, label_names=['label_suvr', 'label_amyloid'],
+                 num_epochs=1, seed=1, extract_features=True, batch_size=8)
     # label_names=['label_suvr', 'label_amyloid'],
 
 

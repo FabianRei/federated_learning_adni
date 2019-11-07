@@ -4,12 +4,15 @@ import os
 import scipy.misc
 
 
-def get_dataset(h5_path, label_names=['label_amyloid'], limit=-1, include_subjects=False):
+def get_dataset(h5_path, label_names=['label_amyloid'], limit=-1, include_subjects=False, include_train_info=False):
     data = h5py.File(h5_path, 'r')
     arrs = []
     labels = []
     if include_subjects:
         label_names.append('rid')
+    if include_train_info:
+        label_names.append('train_data')
+        label_names.append('img_id')
     for i in range(len(label_names)):
         labels.append([])
     for k in data.keys():
