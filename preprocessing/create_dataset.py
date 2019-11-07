@@ -20,7 +20,7 @@ def get_pickle_fn(pickle_fnames, id):
             return fn
 
 
-windows_db = True
+windows_db = False
 
 if windows_db:
     fpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\trial_sample'
