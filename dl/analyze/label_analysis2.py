@@ -18,7 +18,7 @@ def get_id(ids, key):
 
 
 # label_path = '/share/wandell/data/reith/federated_learning/labels_detailled.pickle'
-label_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\xml_labels_detailled_suvr.pickle'
+label_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\xml_labels_detailled_suvr_longitudinal.pickle'
 with open(label_path, 'rb') as f:
     labels = pickle.load(f)
 # excel_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\Scanner information.gz.xls'
@@ -133,7 +133,7 @@ for id in not_train_ids:
 
 
 
-out_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\xml_labels_detailled_suvr_exam_times.pickle'
+out_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\xml_labels_detailled_suvr_longitudinal_times.pickle'
 
 with open(out_path, 'wb') as f:
     pickle.dump(labels, f)

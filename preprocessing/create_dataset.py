@@ -35,7 +35,7 @@ else:
 
 xml_path = os.path.join(fpath, 'xml')
 nifti_path = os.path.join(fpath, 'nifti')
-pickle_path = os.path.join(fpath, 'xml_labels_detailled_suvr_longitudinal.pickle')
+pickle_path = os.path.join(fpath, 'xml_labels_detailled_suvr_longitudinal_times.pickle')
 
 with open(pickle_path, 'rb') as p:
     pdata = pickle.load(p)
