@@ -279,7 +279,7 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
         print(f"Test accuracy is {test_acc * 100:.2f} percent")
     if extract_features:
         features_dict = get_net_features(Net, data, labels, img_ids)
-        with open(os.path.join(out_path, 'fc_activations.pickle')) as f:
+        with open(os.path.join(out_path, 'fc_activations.pickle'), 'wb') as f:
             pickle.dump(features_dict, f)
     if save_model:
         model_out_path = os.path.join(out_path, f'resnet_model_{time_stamp}{extra_info}{standard_info}.pth')
