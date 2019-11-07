@@ -20,8 +20,10 @@ def batch_gen(data, labels, batchSize, shuffle=True):
         i += batchSize
         j += batchSize
 
+
 def hook(module, input, output):
-    outputs.append(input)
+    outputs.append(np.array(input[0].cpu().detach().numpy()))
+
 
 def get_net_features(Net, data_in, labels_in, img_ids):
     data_in =  torch.from_numpy(data_in).type(torch.float32)
@@ -37,7 +39,6 @@ def get_net_features(Net, data_in, labels_in, img_ids):
     labels = []
     Net.eval()
     for batch_idx, (data, target) in enumerate(batch_gen(data_in, labels_in, 1, shuffle=False)):
-        data_temp = np.copy(data)
         data, target = Variable(data), Variable(target)
         data, target = data.cuda(), target.cuda()
         net_out = Net(data)
@@ -53,7 +54,7 @@ def get_net_features(Net, data_in, labels_in, img_ids):
     print(f"Test accuracy is {np.mean(allAccuracy)}")
     predictions = [float(p) for p in predictions]
     test_labels = [float(l) for l in labels_in]
-    activations = [np.array(t[0].cpu().detach().numpy()) for t in outputs]
+    activations = outputs
     tt = np.mean(allAccuracy), np.stack((predictions, test_labels)).T
     tt = np.mean(allAccuracy)
     result = {}
