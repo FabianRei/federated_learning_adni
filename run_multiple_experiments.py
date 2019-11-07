@@ -49,21 +49,13 @@ def run_jobs(jobs):
 
 if __name__ == '__main__':
     full_start = time.time()
-    # run on smaller resnext with higher batch size
-    super_folder = '/scratch/reith/fl/experiments/seeds_resnet152'
-    sub_folders = glob(os.path.join(super_folder, '*seed*'))
-    # sub_folders = ['/scratch/reith/fl/experiments/transfer_experiment/seed_10']
-    # sub_folders = ['/scratch/reith/fl/experiments/transfer_experiment/seed_higher_bs_freeze_5_epochs_10']
-    print(sub_folders)
-    sub_folders.sort(key=lambda x: int(x.split('_')[-1]))
+    # get activations
+    sub_folders = ['/scratch/reith/fl/experiments/feature_activations']
     for sub in sub_folders:
-        seed = int(sub.split('_')[-1])
+        seed = 10
         jobs = [
-            {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32},
-            {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32},
-            {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32},
-            {'extra_info': '', 'pretrained': False, 'label_names': ['label_amyloid'], 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32}]
-        h5_files = glob(f'{sub}/*_*/*.h5')
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'batch_size': 32}]
+        h5_files = glob(f'{sub}/*.h5')
         # import pdb; pdb.set_trace()
         print(h5_files)
         for h5_file in h5_files:
@@ -128,6 +120,30 @@ r'''
 ###############################################
 ######Past runs################################
 ###############################################
+if __name__ == '__main__':
+    full_start = time.time()
+    # run on smaller resnext with higher batch size
+    super_folder = '/scratch/reith/fl/experiments/seeds_resnet152'
+    sub_folders = glob(os.path.join(super_folder, '*seed*'))
+    # sub_folders = ['/scratch/reith/fl/experiments/transfer_experiment/seed_10']
+    # sub_folders = ['/scratch/reith/fl/experiments/transfer_experiment/seed_higher_bs_freeze_5_epochs_10']
+    print(sub_folders)
+    sub_folders.sort(key=lambda x: int(x.split('_')[-1]))
+    for sub in sub_folders:
+        seed = int(sub.split('_')[-1])
+        jobs = [
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32},
+            {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32},
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32},
+            {'extra_info': '', 'pretrained': False, 'label_names': ['label_amyloid'], 'lr': 0.0001, 'seed': seed, 'save_model': False, 'use_resnet152': True, 'batch_size': 32}]
+        h5_files = glob(f'{sub}/*_*/*.h5')
+        # import pdb; pdb.set_trace()
+        print(h5_files)
+        for h5_file in h5_files:
+            process_jobs = [(h5_file, job) for job in jobs]
+            print(process_jobs)
+            run_jobs(process_jobs)
+    print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
 $$$$$$$$$$$$$$$Transfer experiment $$$$$$$$$$$
 if __name__ == '__main__':
     full_start = time.time()
