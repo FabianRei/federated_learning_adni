@@ -20,7 +20,7 @@ def get_pickle_fn(pickle_fnames, id):
             return fn
 
 
-windows_db = False
+windows_db = True
 
 if windows_db:
     fpath = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\trial_sample'
@@ -77,6 +77,7 @@ for i, f in enumerate(nifti_files):
             h5_file[basename].attrs['mmsescore'] = pdata[basename]['mmsescore']
             h5_file[basename].attrs['train_data'] = pdata[basename]['train_data']
             h5_file[basename].attrs['scan_time'] = pdata[basename]['scan_time']
+            h5_file[basename].attrs['img_id'] = pdata[basename]['img_id']
 
         except Exception as e:
             print(f'{basename} sucks, error is: {e}')
