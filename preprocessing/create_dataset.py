@@ -30,12 +30,12 @@ if windows_db:
 else:
     fpath = '/scratch/reith/fl/data'
     prefix = ''
-    outpath = '/scratch/reith/fl/experiments/extended_attributes_data'
+    outpath = '/scratch/reith/fl/experiments/longitudinal_suvr'
     os.makedirs(outpath, exist_ok=True)
 
 xml_path = os.path.join(fpath, 'xml')
 nifti_path = os.path.join(fpath, 'nifti')
-pickle_path = os.path.join(fpath, 'xml_labels_detailled_suvr_exam_times.pickle')
+pickle_path = os.path.join(fpath, 'xml_labels_detailled_suvr_longitudinal.pickle')
 
 with open(pickle_path, 'rb') as p:
     pdata = pickle.load(p)
@@ -78,6 +78,8 @@ for i, f in enumerate(nifti_files):
             h5_file[basename].attrs['train_data'] = pdata[basename]['train_data']
             h5_file[basename].attrs['scan_time'] = pdata[basename]['scan_time']
             h5_file[basename].attrs['img_id'] = pdata[basename]['img_id']
+            h5_file[basename].attrs['label_0_79_suvr'] = pdata[basename]['label_0_79_suvr']
+
 
         except Exception as e:
             print(f'{basename} sucks, error is: {e}')

@@ -194,11 +194,14 @@ def get_labels_from_nifti(nii_paths, berkeley_data, adni_meta, include_notfound=
         label = get_amyloid_label(meta_data['rid'], meta_data['examdate'], berkeley_data, name=name)
         label2 = get_amyloid_label(meta_data['rid'], meta_data['examdate'], berkeley_data, name=name,
                                    label_name='SUMMARYSUVR_WHOLECEREBNORM')
+        label3 = get_amyloid_label(meta_data['rid'], meta_data['examdate'], berkeley_data, name=name,
+                                   label_name='SUMMARYSUVR_COMPOSITE_REFNORM')
 
         if include_notfound or label != -1:
             result[name] = label
             meta_data['label'] = label
             meta_data['label_suvr'] = label2
+            meta_data['label_0_79_suvr'] = label3
             meta_data['examdate'] = str(meta_data['examdate']).split(' ')[0]
             result_detailled[name] = meta_data
     return result, result_detailled
@@ -233,6 +236,6 @@ nii_data = glob(nii_folder + r'/**/*.nii', recursive=True)
 labels, labels_detailled = get_labels_from_nifti(adni_meta, berkeley_data, adni_meta)
 # with open(os.path.join(output_folder, 'labels_plain_suvr.pickle'), 'wb') as f:
 #     pickle.dump(labels, f)
-with open(os.path.join(output_folder, 'xml_labels_detailled_suvr_extended_edition.pickle'), 'wb') as f:
+with open(os.path.join(output_folder, 'xml_labels_detailled_suvr_longitudinal.pickle'), 'wb') as f:
     pickle.dump(labels_detailled, f)
 print('done')
