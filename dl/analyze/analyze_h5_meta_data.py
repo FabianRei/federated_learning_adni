@@ -20,7 +20,7 @@ def get_id(ids, key):
 
 
 # label_path = '/share/wandell/data/reith/federated_learning/labels_detailled.pickle'
-h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_prediction.h5'
+h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_longitudinal.h5'
 
 
 data = h5py.File(h5_path, 'r')
@@ -40,6 +40,7 @@ sex = []
 label_suvr = []
 label_amyloid = []
 mmsescore = []
+composite_suvr = []
 
 
 # scan_keys = np.array(scan_sheet['Scanner'])
@@ -60,6 +61,7 @@ for k in data.keys():
     label_suvr.append(data[k].attrs['label_suvr'])
     label_amyloid.append(data[k].attrs['label_amyloid'])
     mmsescore.append(data[k].attrs['mmsescore'])
+    composite_suvr.append(data[k].attrs['label_0_79_suvr'])
 
 
 ages = np.array(ages).astype(np.float)
@@ -75,6 +77,7 @@ sex = np.array(sex)
 label_suvr = np.array(label_suvr)
 label_amyloid = np.array(label_amyloid)
 mmsescore = np.array(mmsescore)
+composite_suvr = np.array(composite_suvr)
 
 
 print('done')
