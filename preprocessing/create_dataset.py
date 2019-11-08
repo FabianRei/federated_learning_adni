@@ -78,7 +78,7 @@ for i, f in enumerate(nifti_files):
             h5_file[basename].attrs['train_data'] = pdata[basename]['train_data']
             h5_file[basename].attrs['scan_time'] = pdata[basename]['scan_time']
             h5_file[basename].attrs['img_id'] = pdata[basename]['img_id']
-            h5_file[basename].attrs['label_0_79_suvr'] = pdata[basename]['label_0_79_suvr'][0]
+            h5_file[basename].attrs['label_0_79_suvr'] = float(pdata[basename]['label_0_79_suvr'])
 
 
         except Exception as e:
