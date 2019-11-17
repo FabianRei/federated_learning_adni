@@ -22,9 +22,13 @@ def get_id(ids, key):
 # label_path = '/share/wandell/data/reith/federated_learning/labels_detailled.pickle'
 h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_longitudinal.h5'
 
-
 data = h5py.File(h5_path, 'r')
 
+
+in_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\xml_labels_detailled_suvr_longitudinal_times_fixed.pickle'
+
+with open(in_path, 'rb') as f:
+    data_pickle = pickle.load(f)
 
 ages = []
 apoea1 = []
@@ -52,7 +56,7 @@ for k in data.keys():
     apoea2.append(data[k].attrs['apoea2'])
     dead.append(data[k].attrs['dead'])
     train_data.append(data[k].attrs['train_data'])
-    scan_time.append(data[k].attrs['scan_time'])
+    scan_time.append(data_pickle[k]['scan_time'])
     sub_id.append(data[k].attrs['rid'])
     faq_total.append(data[k].attrs['faqtotal'])
     img_id.append(data[k].attrs['img_id'])
@@ -80,14 +84,36 @@ mmsescore = np.array(mmsescore)
 composite_suvr = np.array(composite_suvr)
 
 
+suvr = label_suvr[~train_data]
+time = scan_time[~train_data]
+sub = sub_id[~train_data]
+
+delta_s = []
+delta_t = []
+for s in np.unique(sub):
+    su = suvr[sub==s]
+    ti = time[sub==s]
+    if ti.min() >0:
+        if len(ti) > 1:
+            ti -= ti.min()
+        else:
+            continue
+    delta_su = su-su[ti.argmin()]
+    delta_s.extend(delta_su)
+    delta_t.extend(ti)
+
+delta_s = np.array(delta_s)
+delta_t = np.array(delta_t)
+
+
 print('done')
+plt.scatter(delta_t[delta_t>0], delta_s[delta_t>0])
 
 
 
 
 
-
-out_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\xml_labels_detailled_suvr_exam_times.pickle'
-
-with open(out_path, 'wb') as f:
-    pickle.dump(labels, f)
+# out_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\xml_labels_detailled_suvr_exam_times.pickle'
+#
+# with open(out_path, 'wb') as f:
+#     pickle.dump(labels, f)

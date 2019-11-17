@@ -35,7 +35,7 @@ else:
 
 xml_path = os.path.join(fpath, 'xml')
 nifti_path = os.path.join(fpath, 'nifti')
-pickle_path = os.path.join(fpath, 'xml_labels_detailled_suvr_longitudinal_times.pickle')
+pickle_path = os.path.join(fpath, 'xml_labels_detailled_suvr_longitudinal_times_fixed.pickle')
 
 with open(pickle_path, 'rb') as p:
     pdata = pickle.load(p)
@@ -44,7 +44,7 @@ pickle_fnames = list(pdata.keys())
 nifti_files = glob(f'{nifti_path}/**/*.nii', recursive=True)
 
 sizes = []
-h5_file = h5py.File(os.path.join(outpath, 'slice_data_subj.h5'), 'w')
+h5_file = h5py.File(os.path.join(outpath, 'slice_data_longitudinal_fixed.h5'), 'w')
 # labels_amyloid = {}
 # labels_suvr = {}
 write_file = open(os.path.join(outpath, 'faulty_nii_files.txt'), 'w')

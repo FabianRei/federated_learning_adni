@@ -242,6 +242,7 @@ if __name__ == '__main__':
     # super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_10-90_lower_lr_transfer'
     # super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds'
     super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_lower_lr_imgnet_fixed_experiment2'
+    super_path = r'C:\Users\Fabian\stanford\fed_learning\rsync\fl\experiments\seeds_10-90_lower_lr_imgnet_fixed_experiment2'
     fpaths = glob(os.path.join(super_path, '*seed*'))
     dist_10 = glob(rf'{super_path}\*seed*\dist_10\*.csv')
     one_slice = glob(rf'{super_path}\*seed*\one_slice\*.csv')

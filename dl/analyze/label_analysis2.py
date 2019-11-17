@@ -87,6 +87,8 @@ not_train_sub_ids = []
 
 # writer = CsvWriter(csv_filepath, header=['subject_id', 'time', 'suvr'], delim=',')
 for ii, sub in enumerate(subs):
+    if sub==31:
+        print('db')
     times = examdate_posix[subject_ids == sub]
     time_ids = img_ids[subject_ids == sub]
     suvrs = suvr[subject_ids == sub]>1.11
@@ -99,7 +101,7 @@ for ii, sub in enumerate(subs):
     if len(np.unique(suvrs)) == 2 or True:
         count += 1
         suvr_times = suvr[subject_ids == sub][np.argsort(times)]
-        times = times[np.argsort(times)]
+        # times = times[np.argsort(times)]
         # for su, ti in zip(suvr_times, times):
         #     writer.write_row(subject_id=sub, time=ti, suvr=su)
         print(times[np.argsort(times)], suvr[subject_ids == sub][np.argsort(times)], count)
@@ -133,7 +135,7 @@ for id in not_train_ids:
 
 
 
-out_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\xml_labels_detailled_suvr_longitudinal_times.pickle'
+out_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\xml_labels_detailled_suvr_longitudinal_times_fixed.pickle'
 
 with open(out_path, 'wb') as f:
     pickle.dump(labels, f)
