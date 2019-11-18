@@ -5,6 +5,7 @@ import os
 import pandas as pd
 from dl.data.project_logging import CsvWriter
 import h5py
+import plotly.express as px
 
 
 def get_key(key_ids, id):
@@ -20,7 +21,7 @@ def get_id(ids, key):
 
 
 # label_path = '/share/wandell/data/reith/federated_learning/labels_detailled.pickle'
-h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_longitudinal.h5'
+h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_longitudinal_fixed.h5'
 
 data = h5py.File(h5_path, 'r')
 
@@ -84,12 +85,13 @@ mmsescore = np.array(mmsescore)
 composite_suvr = np.array(composite_suvr)
 
 
-suvr = label_suvr[~train_data]
+suvr = composite_suvr[~train_data]
 time = scan_time[~train_data]
 sub = sub_id[~train_data]
 
 delta_s = []
 delta_t = []
+d_suvrs = []
 for s in np.unique(sub):
     su = suvr[sub==s]
     ti = time[sub==s]
@@ -99,18 +101,82 @@ for s in np.unique(sub):
         else:
             continue
     delta_su = su-su[ti.argmin()]
+    if delta_su.min() < -0.2:
+        print('db')
     delta_s.extend(delta_su)
     delta_t.extend(ti)
+    d_suvrs.extend(su)
+
+d_suvr_comp = d_suvrs
+delta_comp = delta_s
+
+suvr = label_suvr[~train_data]
+time = scan_time[~train_data]
+sub = sub_id[~train_data]
+
+delta_s = []
+delta_t = []
+d_suvrs = []
+for s in np.unique(sub):
+    su = suvr[sub==s]
+    ti = time[sub==s]
+    if ti.min() >0:
+        if len(ti) > 1:
+            ti -= ti.min()
+        else:
+            continue
+    delta_su = su-su[ti.argmin()]
+    if delta_su.min() < -0.2:
+        print('db')
+    delta_s.extend(delta_su)
+    delta_t.extend(ti)
+    d_suvrs.extend(su)
 
 delta_s = np.array(delta_s)
 delta_t = np.array(delta_t)
+d_suvrs = np.array(d_suvrs)
+delta_comp = np.array(delta_comp)
 
+t_sum = np.array(d_suvrs)>1.11
+t_comp = np.array(d_suvr_comp)>0.79
+print(np.mean(delta_comp[t_comp]))
+print(np.mean(delta_comp[~t_comp]))
+t_sum_names = ['positive' if x else 'negative' for x in t_sum]
+t_comp_names = ['positive' if x else 'negative' for x in t_comp]
+
+
+print(np.mean(delta_s[t_sum]))
+print(np.mean(delta_s[~t_sum]))
+df_refnorm = pd.DataFrame({'Amyloid_status': t_comp_names, 'Delta SUVR REFNORM': delta_comp, 'Delta time (years)': delta_t})
+df_cerebnorm = pd.DataFrame({'Amyloid_status': t_sum_names, 'Delta SUVR CEREBNORM': delta_s, 'Delta time (years)': delta_t})
+
+fig = px.scatter(df_cerebnorm, x='Delta time (years)', y='Delta SUVR CEREBNORM', color='Amyloid_status', trendline='ols')
+fig.show()
+results = px.get_trendline_results(fig)
+print(results)
+results.query("Amyloid_status == 'negative'").px_fit_results.iloc[0].summary()
+results.query("Amyloid_status == 'positive'").px_fit_results.iloc[0].summary()
+
+
+fig = px.scatter(df_refnorm, x='Delta time (years)', y='Delta SUVR REFNORM', color='Amyloid_status', trendline='ols')
+fig.show()
+results = px.get_trendline_results(fig)
+print(results)
+results.query("Amyloid_status == 'negative'").px_fit_results.iloc[0].summary()
+results.query("Amyloid_status == 'positive'").px_fit_results.iloc[0].summary()
 
 print('done')
-plt.scatter(delta_t[delta_t>0], delta_s[delta_t>0])
 
-
-
+# fig = plt.figure()
+# # plt.scatter(delta_t[(delta_t>0) & (d_suvrs<0.79)], delta_s[(delta_t>0) & (d_suvrs<0.79)], label='Amyloid negative', s=1, alpha=0.5)
+# plt.scatter(delta_t[(delta_t>0) & (d_suvrs>0.79)], delta_s[(delta_t>0) & (d_suvrs>0.79)], label='Amyloid positive', s=1, alpha=0.5)
+# plt.legend()
+# plt.ylabel('Delta SUVR composite')
+# plt.xlabel('Delta time (years)')
+#
+# out_path = r'C:\Users\Fabian\Desktop\Greg'
+# fname = 'suvr_composite_scatter_plot_positive'
+# fig.savefig(os.path.join(out_path, f'{fname}.png'), dpi=200)
 
 
 # out_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\xml_labels_detailled_suvr_exam_times.pickle'
