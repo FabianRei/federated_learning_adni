@@ -126,7 +126,15 @@ class ResNet50Reg(nn.Module):
         for param in self.parameters():
             param.requires_grad = True
 
+    def to_cuda(self):
+        self.ResNet = self.ResNet.cuda()
+        self.channel_mean = self.channel_mean.cuda()
+        self.channel_std = self.channel_std.cuda()
 
+    def to_cpu(self):
+        self.ResNet = self.ResNet.cpu()
+        self.channel_mean = self.channel_mean.cpu()
+        self.channel_std = self.channel_std.cpu()
 if __name__ == '__main__':
     net = ResNet50Reg(pretrained=True, num_input=9)
     print('db')
