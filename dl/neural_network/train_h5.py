@@ -36,7 +36,7 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
              batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1, freeze_epochs=-1,
              use_resnext=False, use_resnet152=False, save_model=True, train_by_id = '', extract_features=False,
              threshold=1.11):
-    windows_db = False
+    windows_db = True
     if windows_db:
         h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_prediction.h5'
 
@@ -94,16 +94,24 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
     # normalize data
     if len(data.shape) == 4:
         # channel wise
+        print('data mean is:', data.mean(axis=(0, 1, 2)))
+        print('data std is:',  data.std(axis=(0, 1, 2)))
         data -= data.mean(axis=(0, 1, 2))
-        data -= data.std(axis=(0, 1, 2))
-    print(f'data mean is {data.mean()}')
-    data -= data.mean()
+        data /= data.std(axis=(0, 1, 2))
+    else:
+        print('data mean is:', data.mean())
+        print('data std is:', data.std())
+        data -= data.mean()
+        data /= data.std()
     print(f'data std is {data.std()}')
-    data /= data.std()
+    print(f'data mean is {data.mean()}')
+
     # pretrained data needs input to be in the range [0,1]
     # we test, whether this is best for transfer learning as well.. -> yes, standard way is best
     if pretrained:
         # import pdb; pdb.set_trace()
+        print('data min is:', data.min())
+        print('data max is:', data.max())
         data -= data.min()
         data /= data.max()
         print(f'skewed data into min: {data.min()} and max: {data.max()}')
