@@ -46,6 +46,33 @@ def run_jobs(jobs):
     for proc in process_dict.values():
         proc.join()
 
+if __name__ == '__main__':
+    full_start = time.time()
+    super_folder = '/scratch/reith/fl/experiments/seeds_lower_lr_imgnet_fixed'
+    sub_folders = glob(os.path.join(super_folder, '*seed*'))
+    # sub_folders = ['/scratch/reith/fl/experiments/transfer_experiment/seed_10']
+    # sub_folders = ['/scratch/reith/fl/experiments/transfer_experiment/seed_higher_bs_freeze_5_epochs_10']
+    print(sub_folders)
+    for sub in sub_folders:
+        seed = int(sub.split('_')[-1])
+        jobs = [
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed},
+            {'extra_info': '', 'pretrained': False, 'label_names': ['label_suvr', 'label_amyloid'], 'regression': True, 'lr': 0.0001, 'seed': seed},
+            {'extra_info': '', 'pretrained': True, 'label_names': ['label_amyloid'], 'lr': 0.0001, 'seed': seed},
+            {'extra_info': '', 'pretrained': False, 'label_names': ['label_amyloid'], 'lr': 0.0001, 'seed': seed}]
+        h5_files = glob(f'{sub}/*_*/*.h5')
+        # import pdb; pdb.set_trace()
+        print(h5_files)
+        for h5_file in h5_files:
+            process_jobs = [(h5_file, job) for job in jobs]
+            print(process_jobs)
+            run_jobs(process_jobs)
+    print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
+
+
+
+r'''
+################LATER#################################
 
 if __name__ == '__main__':
     full_start = time.time()
@@ -65,10 +92,7 @@ if __name__ == '__main__':
             print(process_jobs)
             run_jobs(process_jobs)
     print(f"Whole program finished! It took {str(datetime.timedelta(seconds=time.time() - full_start))} hours:min:seconds")
-
-
-r'''
-################LATER#################################
+##############################################################
 if __name__ == '__main__':
     full_start = time.time()
     # run on smaller resnext with higher batch size
