@@ -36,7 +36,7 @@ def train_h5(h5_path, num_epochs=30, label_names=None, extra_info='', lr=0.01, d
              batch_size=32, binning=-1, regression=False, include_subject_ids=True, seed=-1, freeze_epochs=-1,
              use_resnext=False, use_resnet152=False, save_model=True, train_by_id = '', extract_features=False,
              threshold=1.11):
-    windows_db = True
+    windows_db = False
     if windows_db:
         h5_path = r'C:\Users\Fabian\stanford\fed_learning\federated_learning_data\slice_data_prediction.h5'
 
