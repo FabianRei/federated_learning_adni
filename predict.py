@@ -5,7 +5,7 @@ from torch.autograd import Variable
 
 
 model_path = r'model.pth'
-nii_file = r'data.nii'
+nii_file = r'example.nii'
 
 nii = nibabel.load(nii_file)
 nii = nii.get_fdata()
@@ -43,4 +43,3 @@ model.eval()
 model_in = nii.clone()
 result = model(model_in)
 print(result)
-print('nice')
